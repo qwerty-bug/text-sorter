@@ -4,7 +4,7 @@ namespace FileGenerator
 {
     public class FileRepository
     {
-        public const string FilePath = "sampleData.txt";
+        public const string FilePath = "SampleData.txt";
 
         private readonly SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
 
@@ -13,7 +13,7 @@ namespace FileGenerator
             semaphoreSlim.Wait();
             try
             {
-                using (StreamWriter writer = new StreamWriter(FileRepository.FilePath, true, Encoding.UTF8))
+                using (StreamWriter writer = new StreamWriter(FilePath, true, Encoding.UTF8))
                 {
                     writer.WriteLine(data);
                 }

@@ -6,7 +6,7 @@ namespace FileGenerator
     {
         private const int _100MB = 104857600;
 
-        const string Text = "But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was";
+        const string Text = "Green Sweater is Jeans and Dress is Jacket Scarf Red Blue Yellow Black";
 
         static readonly HashSet<string> Words = new HashSet<string>();
 
@@ -49,7 +49,8 @@ namespace FileGenerator
             var rdm = new Random();
             StringBuilder strBld = new StringBuilder(rdm.Next(0, int.MaxValue).ToString())
                 .Append('.');
-            foreach (var i in Enumerable.Range(1, 50))
+            var wordsInLine = rdm.Next(5, 15);
+            foreach (var i in Enumerable.Range(1, wordsInLine))
             {
                 strBld.Append(' ').Append(Words.ElementAt(rdm.Next(WordsSize)));
             }
