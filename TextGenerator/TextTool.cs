@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace FileGenerator
+namespace DataGenerator
 {
     public static class TextTool
     {
@@ -34,11 +34,13 @@ namespace FileGenerator
             while (true)
             {
                 textLine = GetLine();
-                text.AppendLine(textLine);
+                text.Append(textLine);
                 fileSize += Encoding.UTF8.GetByteCount(textLine);
 
                 if (fileSize >= _100MB)
                     break;
+
+                text.AppendLine();
             }
 
             return text.ToString();

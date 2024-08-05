@@ -1,6 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using FileGenerator;
-using System.Diagnostics;
+using Common;
+using DataGenerator;
 
 Console.WriteLine("Hello, TextGenerator!");
 Console.WriteLine($"============================================");
@@ -18,13 +18,13 @@ if(dataSize <= 0 ||  dataSize > 100)
     return;
 }
 
-GlobalTimer.Stopwatch = Stopwatch.StartNew();
+GlobalTimer.StartNew();
 var generator = new TextGenerator();
 generator.Generate(dataSize);
-GlobalTimer.Stopwatch.Stop();
+GlobalTimer.StopWatch.Stop();
 
 Console.WriteLine($"============================================");
-Console.WriteLine($"Total processing time: {GlobalTimer.Stopwatch.Elapsed.TotalSeconds}s.");
+Console.WriteLine($"Total processing time: {GlobalTimer.StopWatch.Elapsed.TotalSeconds}s.");
 
 Console.ReadKey();
 

@@ -1,4 +1,6 @@
-﻿namespace FileGenerator
+﻿using Common;
+
+namespace DataGenerator
 {
     public class TextGenerator
     {
@@ -6,12 +8,12 @@
 
         public void Generate(int dataGBLimit)
         {
-            if (File.Exists(FileRepository.FilePath))
+            if (File.Exists(FileRepository.SampleDataFile))
             {
-                File.Delete(FileRepository.FilePath);
+                File.Delete(FileRepository.SampleDataFile);
             }
 
-            Console.WriteLine($"{GlobalTimer.Stopwatch.Elapsed.Seconds}s, Start generating {dataGBLimit}GB of text data ...");
+            Console.WriteLine($"{GlobalTimer.StopWatch.Elapsed.Seconds}s, Start generating {dataGBLimit}GB of text data ...");
 
             var repo = new FileRepository();
             for (int i = 0; i < dataGBLimit; i++)
@@ -23,17 +25,17 @@
                         .Run(() =>
                         {
                             var result = TextTool.GetChunk();
-                            Console.WriteLine($"{GlobalTimer.Stopwatch.Elapsed.Seconds}s, Created data for {i + 1}GB of {dataGBLimit}GB...");
+                            Console.WriteLine($"{GlobalTimer.StopWatch.Elapsed.Seconds}s, Created data for {i + 1}GB of {dataGBLimit}GB...");
                             return result;
                         })
                         .ContinueWith(dataTask =>
                         {
-                            repo.Save(dataTask.Result);
-                            Console.WriteLine($"{GlobalTimer.Stopwatch.Elapsed.Seconds}s, Saved data for {i + 1}GB of {dataGBLimit}GB...");
+                            repo.Save(dataTask.Result, FileRepository.SampleDataFile);
+                            Console.WriteLine($"{GlobalTimer.StopWatch.Elapsed.Seconds}s, Saved data for {i + 1}GB of {dataGBLimit}GB...");
                         });
                 }
                 Task.WaitAll(tasks);
-                Console.WriteLine($"{GlobalTimer.Stopwatch.Elapsed.Seconds}s, Text {i + 1}GB of {dataGBLimit}GB saved successfully.");
+                Console.WriteLine($"{GlobalTimer.StopWatch.Elapsed.Seconds}s, Text {i + 1}GB of {dataGBLimit}GB saved successfully.");
             }
 
             Console.WriteLine($"All data saved successfully.");
