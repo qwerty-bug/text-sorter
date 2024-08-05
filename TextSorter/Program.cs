@@ -10,7 +10,7 @@ Console.WriteLine($"--------------------------------------------");
 
 GlobalTimer.StartNew();
 var sorter = new Sorter();
-sorter.SortAndSaveData();
+sorter.SortAndSave();
 GlobalTimer.StopWatch.Stop();
 
 Console.WriteLine($"============================================");

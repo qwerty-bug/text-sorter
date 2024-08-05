@@ -5,7 +5,7 @@ namespace TextSorter
 {
     public class Sorter
     {
-        public void SortAndSaveData()
+        public void SortAndSave()
         {
             Console.WriteLine($"{GlobalTimer.StopWatch.Elapsed.TotalSeconds}s, Start reading file.");
 
@@ -20,9 +20,9 @@ namespace TextSorter
                     Task.Run(
                         () => Worker.Sort(file)
                     )
-                    .ContinueWith(async sortedTask =>
+                    .ContinueWith(sortedTask =>
                     {
-                        await repo.Save(sortedTask.Result, $"sorted{file}");
+                        repo.Save(sortedTask.Result, $"sorted{file}");
                     }));
             }
 
