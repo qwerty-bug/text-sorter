@@ -4,7 +4,7 @@ using TextSorter;
 
 Console.WriteLine("Hello, Text Sorter!");
 Console.WriteLine($"============================================");
-Console.WriteLine($"Data loaded from file: '{FileRepository.SampleDataFile}'.");
+Console.WriteLine($"Data loaded from file: '{DataConfig.SampleDataFile}'.");
 Console.WriteLine($"--------------------------------------------");
 
 

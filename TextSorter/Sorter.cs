@@ -1,5 +1,4 @@
 ﻿using Common;
-using System.Collections.Immutable;
 using System.Text;
 
 namespace TextSorter
@@ -8,41 +7,36 @@ namespace TextSorter
     {
         public void SortAndSaveData()
         {
-            Console.WriteLine($"Start reading file: {GlobalTimer.StopWatch.Elapsed.TotalSeconds}s.");
-
-            //var text = File.ReadLines(FileRepository.FilePath, Encoding.UTF8).Take(5).ToList();
-            var text = File.ReadAllLines(FileRepository.SampleDataFile, Encoding.UTF8).ToList();
-            Console.WriteLine($"{GlobalTimer.StopWatch.Elapsed.Seconds}s, Data loaded from file.");
-
-            SortText(text);
-            Console.WriteLine($"{GlobalTimer.StopWatch.Elapsed.Seconds}s, Data sorted successfully.");
+            Console.WriteLine($"{GlobalTimer.StopWatch.Elapsed.TotalSeconds}s, Start reading file.");
 
             var repo = new FileRepository();
-            repo.Save(text, FileRepository.SortedDataFile);
-            Console.WriteLine($"{GlobalTimer.StopWatch.Elapsed.Seconds}s, Data saved to output file.");
-        }
+            var files = repo.SplitIntoChunks(DataConfig.SampleDataFile);
+            Console.WriteLine($"{GlobalTimer.StopWatch.Elapsed.TotalSeconds}s, Main file splitted into {files.Count()} tempFiles.");
 
-        public static void SortText(List<string> text)
-        {
-            text
-                .Sort((line1, line2) =>
-                {
-                    var first = line1.Split('.');
-                    var firstNumber = first[0];
-                    var firstText = first[1];
-
-                    var second = line2.Split('.');
-                    var secondNumber = second[0];
-                    var secondText = second[1];
-
-                    var result = string.Compare(firstText, secondText, StringComparison.Ordinal);
-                    if (result != 0)
+            var tasks = new List<Task>();
+            foreach (var file in files)
+            {
+                tasks.Add(
+                    Task.Run(
+                        () => Worker.Sort(file)
+                    )
+                    .ContinueWith(sortedTask =>
                     {
-                        return result;
-                    }
+                        repo.Save(sortedTask.Result, $"sorted{file}");
+                    }));
+            }
 
-                    return string.Compare(firstNumber, secondNumber, StringComparison.Ordinal);
-                });
+            Task.WaitAll(tasks.ToArray());
+
+            Console.WriteLine($"{GlobalTimer.StopWatch.Elapsed.Seconds}s, Temp sorted data saved.");
+
+            //var text = File.ReadAllLines(files.First(), Encoding.UTF8).ToList();
+
+            //Worker./*SortText*/(text);
+            //Console.WriteLine($"{GlobalTimer.StopWatch.Elapsed.Seconds}s, Data sorted successfully.");
+
+            //repo.Save(text, DataConfig.SortedDataFile);
+            //Console.WriteLine($"{GlobalTimer.StopWatch.Elapsed.Seconds}s, Data saved to output file.");
         }
     }
 }

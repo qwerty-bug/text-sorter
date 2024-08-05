@@ -1,11 +1,10 @@
-﻿using System.Text;
+﻿using Common;
+using System.Text;
 
 namespace DataGenerator
 {
     public static class TextTool
     {
-        private const int _100MB = 104857600;
-
         const string Text = "Green Sweater is Jeans and Dress is Jacket Scarf Red Blue Yellow Black";
 
         static readonly HashSet<string> Words = new HashSet<string>();
@@ -27,7 +26,7 @@ namespace DataGenerator
 
         public static string GetChunk()
         {
-            string textLine = string.Empty;
+            StringBuilder textLine;
             int fileSize = 0;
 
             StringBuilder text = new StringBuilder();
@@ -35,9 +34,9 @@ namespace DataGenerator
             {
                 textLine = GetLine();
                 text.Append(textLine);
-                fileSize += Encoding.UTF8.GetByteCount(textLine);
+                fileSize += Encoding.UTF8.GetByteCount(textLine.ToString());
 
-                if (fileSize >= _100MB)
+                if (fileSize >= DataConfig.Size100MB)
                     break;
 
                 text.AppendLine();
@@ -46,7 +45,7 @@ namespace DataGenerator
             return text.ToString();
         }
 
-        public static string GetLine()
+        public static StringBuilder GetLine()
         {
             var rdm = new Random();
             StringBuilder strBld = new StringBuilder(rdm.Next(0, int.MaxValue).ToString())
@@ -54,10 +53,14 @@ namespace DataGenerator
             var wordsInLine = rdm.Next(5, 15);
             foreach (var i in Enumerable.Range(1, wordsInLine))
             {
-                strBld.Append(' ').Append(Words.ElementAt(rdm.Next(WordsSize)));
+                var word = Words.ElementAt(rdm.Next(WordsSize));
+                if (i == 1)
+                    word = string.Concat(word[0].ToString().ToUpper(), word.AsSpan(1));
+
+                strBld.Append(' ').Append(word);
             }
 
-            return strBld.ToString();
+            return strBld;
         }
     }
 }
