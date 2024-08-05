@@ -20,9 +20,9 @@ namespace TextSorter
                     Task.Run(
                         () => Worker.Sort(file)
                     )
-                    .ContinueWith(sortedTask =>
+                    .ContinueWith(async sortedTask =>
                     {
-                        repo.Save(sortedTask.Result, $"sorted{file}");
+                        await repo.Save(sortedTask.Result, $"sorted{file}");
                     }));
             }
 

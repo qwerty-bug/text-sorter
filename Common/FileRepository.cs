@@ -27,7 +27,7 @@ namespace Common
             }
         }
 
-        public void Save(List<string> lines, string fileName)
+        public async Task Save(List<string> lines, string fileName)
         {
             semaphoreSlim.Wait();
             try
@@ -36,7 +36,7 @@ namespace Common
                 {
                     foreach (string line in lines)
                     {
-                        writer.WriteLine(line);
+                        await writer.WriteLineAsync(line);
                     }
                 }
             }
