@@ -8,50 +8,28 @@ namespace TextSorter
     {
         public async Task Process()
         {
-            Logger.Log($"Start reading file.");
+            Logger.Log($"Start processing file.");
+            Logger.Log("-----------------------------------");
 
-            var repo = new FileRepository();
-            var files = repo.SplitIntoChunks(DataConfig.SampleDataFile);
-            Logger.Log($"Main file splitted into {files.Count()} tempFiles.");
+            //var repo = new FileRepository();
+            var tempFiles = Worker.SplitIntoChunks(DataConfig.SampleDataFile);
+            Logger.Log("-----------------------------------");
+            Logger.Log($"{DataConfig.SampleDataFile} file splitted into {tempFiles.Count()} sorted tempFiles.");
 
-            var tasks = new List<Task<string>>();
-            repo = new FileRepository(files.Count());
-            foreach (var file in files)
-            {
-                tasks.Add(
-                    Task.Run(
-                        () =>
-                        {
-                            var result = Worker.Sort(file);
-                            Logger.Log($"File {file} sorted.");
-                            return result;
-                        }
-                    )
-                    .ContinueWith(sortedTask =>
-                    {
-                        var fileName = $"sorted{file}";
-                        repo.Save(sortedTask.Result, fileName);
-                        repo.Remove(file);
-                        Logger.Log($"File 'sorted{file}' saved.");
-                        return fileName;
-                    }));
-            }
+            Logger.Log("All temporary sorted data saved.");
 
-            await Task.WhenAll(tasks.ToArray());
-            Logger.Log("Temp sorted data saved.");
-
-            var sortedTempFiles = tasks.Select(x => x.Result).ToArray();
-            var extSort = new KWayMergeSort(sortedTempFiles);
+            //var sortedTempFiles = tasks.Select(x => x.Result).ToArray();
+            var extSort = new KWayMergeSort(tempFiles);
             await extSort.Sort();
 
-            CleanUp(sortedTempFiles);
+            CleanUp(tempFiles);
 
             Logger.Log($"Data sorted successfully.");
         }
 
-        private void CleanUp(string[] files)
+        private void CleanUp(List<string> tempFiles)
         {
-            foreach (var file in files)
+            foreach (var file in tempFiles)
                 File.Delete(file);
         }
     }

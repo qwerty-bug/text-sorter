@@ -21,7 +21,7 @@ namespace TextPlaygroundTests
                 "632184622. Scarf Blue Green Green Scarf"
             };
 
-            var result = Worker.SortText(textToSort);
+            var result = Worker.SortText(textToSort, 1);
 
             result
                 .Should()
