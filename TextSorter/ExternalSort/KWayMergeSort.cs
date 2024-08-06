@@ -24,7 +24,7 @@ namespace TextSorter.ExternalSort
                 {
                     Reader = readers[i],
                     ReaderId = i,
-                    Value = await readers[i].ReadLineAsync()
+                    Value = await readers[i].ReadLineAsync() ?? string.Empty
                 });
             }
 

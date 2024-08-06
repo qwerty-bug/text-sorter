@@ -11,14 +11,12 @@ namespace TextSorter
             Logger.Log($"Start processing file.");
             Logger.Log("-----------------------------------");
 
-            //var repo = new FileRepository();
             var tempFiles = Worker.SplitIntoChunks(DataConfig.SampleDataFile);
             Logger.Log("-----------------------------------");
             Logger.Log($"{DataConfig.SampleDataFile} file splitted into {tempFiles.Count()} sorted tempFiles.");
 
-            Logger.Log("All temporary sorted data saved.");
+            Logger.Log("All sorted data saved in temp files.");
 
-            //var sortedTempFiles = tasks.Select(x => x.Result).ToArray();
             var extSort = new KWayMergeSort(tempFiles);
             await extSort.Process();
 

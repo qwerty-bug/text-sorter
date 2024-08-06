@@ -99,14 +99,14 @@ namespace Common
             return file;
         }
 
-        public async Task<string> Persist(int id, IReadOnlyList<string> text)
+        public string Persist(int id, IReadOnlyList<string> text)
         {
             var fileName = DataConfig.GetSortedTempDataFileName(id);
             using (StreamWriter writer = new StreamWriter(fileName, false, Encoding.UTF8, bufferSize: DataConfig.BufferSize25MB))
             {
                 foreach (string line in text)
                 {
-                    await writer.WriteLineAsync(line);
+                    writer.WriteLine(line);
                 }
             }
 

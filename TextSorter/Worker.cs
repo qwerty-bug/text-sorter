@@ -56,12 +56,12 @@ namespace TextSorter
             return sortTasks.Select( t => t.Result).ToList();
         }
 
-        private static async Task<string> SortAndSave(int chunkId, List<string> lines)
+        private static string SortAndSave(int chunkId, List<string> lines)
         {
             Logger.Log($"Chunk {chunkId} start sorting...");
             SortText3(lines, chunkId);
             var repo = new FileRepository();
-            return await repo.Persist(chunkId, lines);
+            return repo.Persist(chunkId, lines);
         }
 
         [Obsolete("Slower than SortText3")]

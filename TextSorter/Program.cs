@@ -11,9 +11,9 @@ Logger.Log($"--------------------------------------------");
 GlobalTimer.StartNew();
 var sorter = new Sorter();
 await sorter.Process();
-//GlobalTimer.StopWatch.Stop();
 
 Logger.Log($"============================================");
 Logger.Log($"Total processing time: {GlobalTimer.StopWatch.Elapsed.TotalSeconds}s.");
+Logger.Log($"Press any key to close application.");
 
 Console.ReadKey();
