@@ -2,19 +2,19 @@
 using Common;
 using DataGenerator;
 
-Console.WriteLine("Hello, TextGenerator!");
-Console.WriteLine($"============================================");
-Console.WriteLine($"How many data do you want to generate in GB?");
+Logger.Log($"Hello, TextGenerator!");
+Logger.Log($"============================================");
+Logger.Log($"How many data do you want to generate in GB?");
 var userInput = Console.ReadLine();
 if (!int.TryParse(userInput, out var dataSize))
 {
-    Console.WriteLine($"Invalid number, closing app!");
+    Logger.Log($"Invalid number, closing app!");
     return;
 }
 
 if(dataSize <= 0 ||  dataSize > 100)
 {
-    Console.WriteLine($"Value {dataSize} is too large, closing app!");
+    Logger.Log($"Value {dataSize} is too large, closing app!");
     return;
 }
 
@@ -23,8 +23,8 @@ var generator = new TextGenerator();
 generator.Generate(dataSize);
 GlobalTimer.StopWatch.Stop();
 
-Console.WriteLine($"============================================");
-Console.WriteLine($"Total processing time: {GlobalTimer.StopWatch.Elapsed.TotalSeconds}s.");
+Logger.Log($"============================================");
+Logger.Log($"Total processing time: {GlobalTimer.StopWatch.Elapsed.TotalSeconds}s.");
 
 Console.ReadKey();
 

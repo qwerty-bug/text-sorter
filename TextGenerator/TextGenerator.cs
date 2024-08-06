@@ -13,7 +13,7 @@ namespace DataGenerator
                 File.Delete(DataConfig.SampleDataFile);
             }
 
-            Console.WriteLine($"{GlobalTimer.StopWatch.Elapsed.Seconds}s, Start generating {dataGBLimit}GB of text data ...");
+            Logger.Log($"Start generating {dataGBLimit}GB of text data ...");
 
             var repo = new FileRepository();
             for (int i = 0; i < dataGBLimit; i++)
@@ -25,20 +25,20 @@ namespace DataGenerator
                         .Run(() =>
                         {
                             var result = TextTool.GetChunk();
-                            Console.WriteLine($"{GlobalTimer.StopWatch.Elapsed.Seconds}s, Created data for {i + 1}GB of {dataGBLimit}GB...");
+                            Logger.Log($"Created data for {i + 1}GB of {dataGBLimit}GB...");
                             return result;
                         })
                         .ContinueWith(dataTask =>
                         {
                             repo.Save(dataTask.Result, DataConfig.SampleDataFile);
-                            Console.WriteLine($"{GlobalTimer.StopWatch.Elapsed.Seconds}s, Saved data for {i + 1}GB of {dataGBLimit}GB...");
+                            Logger.Log($"Saved data for {i + 1}GB of {dataGBLimit}GB...");
                         });
                 }
                 Task.WaitAll(tasks);
-                Console.WriteLine($"{GlobalTimer.StopWatch.Elapsed.Seconds}s, Text {i + 1}GB of {dataGBLimit}GB saved successfully.");
+                Logger.Log($"Text {i + 1}GB of {dataGBLimit}GB saved successfully.");
             }
 
-            Console.WriteLine($"All data saved successfully.");
+            Logger.Log($"All data saved successfully in: {DataConfig.SampleDataFile}.");
         }
     }
 }

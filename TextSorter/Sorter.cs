@@ -1,42 +1,58 @@
 ﻿using Common;
 using System.Text;
+using TextSorter.ExternalSort;
 
 namespace TextSorter
 {
     public class Sorter
     {
-        public void SortAndSave()
+        public async Task Process()
         {
-            Console.WriteLine($"{GlobalTimer.StopWatch.Elapsed.TotalSeconds}s, Start reading file.");
+            Logger.Log($"Start reading file.");
 
             var repo = new FileRepository();
             var files = repo.SplitIntoChunks(DataConfig.SampleDataFile);
-            Console.WriteLine($"{GlobalTimer.StopWatch.Elapsed.TotalSeconds}s, Main file splitted into {files.Count()} tempFiles.");
+            Logger.Log($"Main file splitted into {files.Count()} tempFiles.");
 
-            var tasks = new List<Task>();
+            var tasks = new List<Task<string>>();
+            repo = new FileRepository(files.Count());
             foreach (var file in files)
             {
                 tasks.Add(
                     Task.Run(
-                        () => Worker.Sort(file)
+                        () =>
+                        {
+                            var result = Worker.Sort(file);
+                            Logger.Log($"File {file} sorted.");
+                            return result;
+                        }
                     )
                     .ContinueWith(sortedTask =>
                     {
-                        repo.Save(sortedTask.Result, $"sorted{file}");
+                        var fileName = $"sorted{file}";
+                        repo.Save(sortedTask.Result, fileName);
+                        repo.Remove(file);
+                        Logger.Log($"File 'sorted{file}' saved.");
+                        return fileName;
                     }));
             }
 
-            Task.WaitAll(tasks.ToArray());
+            await Task.WhenAll(tasks.ToArray());
+            Logger.Log("Temp sorted data saved.");
 
-            Console.WriteLine($"{GlobalTimer.StopWatch.Elapsed.Seconds}s, Temp sorted data saved.");
+            var sortedTempFiles = tasks.Select(x => x.Result).ToArray();
+            var extSort = new KWayMergeSort(sortedTempFiles);
+            await extSort.Sort();
 
-            //var text = File.ReadAllLines(files.First(), Encoding.UTF8).ToList();
+            CleanUp(sortedTempFiles);
 
-            //Worker./*SortText*/(text);
-            //Console.WriteLine($"{GlobalTimer.StopWatch.Elapsed.Seconds}s, Data sorted successfully.");
+            Logger.Log($"Data sorted successfully.");
+        }
 
-            //repo.Save(text, DataConfig.SortedDataFile);
-            //Console.WriteLine($"{GlobalTimer.StopWatch.Elapsed.Seconds}s, Data saved to output file.");
+        private void CleanUp(string[] files)
+        {
+            foreach (var file in files)
+                File.Delete(file);
         }
     }
 }

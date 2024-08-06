@@ -27,7 +27,7 @@ namespace Common
             }
         }
 
-        public async Task Save(List<string> lines, string fileName)
+        public void Save(List<string> lines, string fileName)
         {
             semaphoreSlim.Wait();
             try
@@ -36,7 +36,7 @@ namespace Common
                 {
                     foreach (string line in lines)
                     {
-                        await writer.WriteLineAsync(line);
+                        writer.WriteLine(line);
                     }
                 }
             }
@@ -53,7 +53,8 @@ namespace Common
             var fileSize = 0;
             var stringBuffer = new StringBuilder();
             var chunkNames = new List<string>();
-            using (StreamReader reader = new StreamReader(baseFile, Encoding.UTF8))
+            var fileStream = File.OpenRead(baseFile);
+            using (StreamReader reader = new StreamReader(fileStream, Encoding.UTF8, bufferSize: DataConfig.BufferSize128KB))
             {
                 var line = string.Empty;
                 while (!reader.EndOfStream)
@@ -65,7 +66,7 @@ namespace Common
                     stringBuffer.AppendLine(line);
 
                     fileSize += Encoding.UTF8.GetByteCount(line);
-                    if (fileSize >= DataConfig.Size50MB)
+                    if (fileSize >= DataConfig.Size100MB)
                     {
                         chunkNames.Add(Persist(id, stringBuffer));
                         stringBuffer.Clear();
@@ -88,12 +89,18 @@ namespace Common
         public string Persist(int id, StringBuilder stringBuffer)
         {
             var file = DataConfig.UnsortedTempDataFile(id);
-            using (StreamWriter writer = new StreamWriter(file, false, Encoding.UTF8))
+            using (StreamWriter writer = new StreamWriter(file, false, Encoding.UTF8, bufferSize: DataConfig.BufferSize128KB))
             {
                 writer.Write(stringBuffer.ToString());
             }
 
             return file;
+        }
+
+        public void Remove(string fileName)
+        {
+            if(File.Exists(fileName))
+                File.Delete(fileName);
         }
     }
 }
