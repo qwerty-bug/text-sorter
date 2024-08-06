@@ -20,7 +20,7 @@ namespace TextSorter
 
             //var sortedTempFiles = tasks.Select(x => x.Result).ToArray();
             var extSort = new KWayMergeSort(tempFiles);
-            await extSort.Sort();
+            await extSort.Process();
 
             CleanUp(tempFiles);
 

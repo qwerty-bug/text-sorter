@@ -91,7 +91,7 @@ namespace Common
         public string Persist(int id, StringBuilder stringBuffer)
         {
             var file = DataConfig.GetUnsortedTempDataFileName(id);
-            using (StreamWriter writer = new StreamWriter(file, false, Encoding.UTF8, bufferSize: DataConfig.BufferSize128KB))
+            using (StreamWriter writer = new StreamWriter(file, false, Encoding.UTF8, bufferSize: DataConfig.BufferSize25MB))
             {
                 writer.Write(stringBuffer.ToString());
             }
@@ -99,14 +99,14 @@ namespace Common
             return file;
         }
 
-        public string Persist(int id, IReadOnlyList<string> text)
+        public async Task<string> Persist(int id, IReadOnlyList<string> text)
         {
             var fileName = DataConfig.GetSortedTempDataFileName(id);
-            using (StreamWriter writer = new StreamWriter(fileName, false, Encoding.UTF8, bufferSize: DataConfig.BufferSize128KB))
+            using (StreamWriter writer = new StreamWriter(fileName, false, Encoding.UTF8, bufferSize: DataConfig.BufferSize25MB))
             {
                 foreach (string line in text)
                 {
-                    writer.WriteLine(line);
+                    await writer.WriteLineAsync(line);
                 }
             }
 

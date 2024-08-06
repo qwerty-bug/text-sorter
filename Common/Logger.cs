@@ -4,7 +4,7 @@
     {
         public static void Log(string message)
         {
-            Console.WriteLine($"{GlobalTimer.StopWatch.Elapsed.TotalSeconds}s, {message}");
+            Console.WriteLine($"{GlobalTimer.StopWatch.Elapsed.TotalSeconds:0.000}s, {message}");
         }
     }
 }

@@ -8,7 +8,7 @@
         public static string GetSortedTempDataFileName(int id) => $"SortedTempData{id}.txt";
         public const int Size100MB = 104857600; //1024*1024*100
         public const int Size50MB = 52428800; //1024*1024*50
-        public const int BufferSize128KB = 131072; //1024*128
+        public const int BufferSize25MB = 10485760; //1024*1024*10
 
     }
 }
