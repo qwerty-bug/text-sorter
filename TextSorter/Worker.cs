@@ -15,7 +15,7 @@ namespace TextSorter
             var lines = new List<string>();
 
             var fileStream = File.OpenRead(baseFile);
-            using (StreamReader reader = new StreamReader(fileStream, Encoding.UTF8, bufferSize: Common.FileOptions.BufferSize8MB))
+            using (StreamReader reader = new StreamReader(fileStream, Encoding.UTF8, bufferSize: Common.FileOptions.BufferSize32MB))
             {
                 var line = string.Empty;
                 while (!reader.EndOfStream)
@@ -36,9 +36,16 @@ namespace TextSorter
 
                         lines = new List<string>();
                         fileSize = 0;
+
+                        //process 1Gb at a time
+                        //if (chunkId == 9)
+                        //{
+                        //    Task.WaitAny(sortTasks.ToArray());
+                        //    Logger.Log($"Staging part {chunkId/10+1}..");
+                        //}
+
                         chunkId++;
                     }
-
                 }
             }
 
@@ -56,7 +63,7 @@ namespace TextSorter
 
         private static string SortAndSave(int chunkId, List<string> lines)
         {
-            Logger.Log($"Chunk {chunkId} start sorting..");
+            Logger.Log($"Chunk {chunkId} start sorting");
             SortText3(lines, chunkId);
 
             Logger.Log($"Chunk: {chunkId} of data sorted");

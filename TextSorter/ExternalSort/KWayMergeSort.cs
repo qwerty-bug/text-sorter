@@ -28,12 +28,15 @@ namespace TextSorter.ExternalSort
             var subarrays = Initialize();
 
             var output = File.OpenWrite(Common.FileOptions.SortedDataFile);
-            using var outputWriter = new StreamWriter(output, bufferSize: Common.FileOptions.BufferSize8MB);
+            using var outputWriter = new StreamWriter(output, bufferSize: Common.FileOptions.BufferSize32MB);
 
+            Logger.Log($"Start final sorting with {subarrays.Count} parts.");
+            int counter = 0;
             while (true)
             {
                 if (subarrays.Count == 0)
                 {
+                    Logger.Log("---------------------");
                     Logger.Log($"Completed sorting");
                     break;
                 }
@@ -42,14 +45,19 @@ namespace TextSorter.ExternalSort
 
                 var minArray = subarrays.First();
                 await outputWriter.WriteLineAsync(minArray.CurrentValue);
+                if (counter % 500000 == 0)
+                    Logger.Log($"Processed records: {counter:n0}");
 
                 var newVal = minArray.ReadNextLine();
                 if (newVal is null)
                 {
                     subarrays.Remove(minArray);
                     minArray.Dispose();
+                    Logger.Log($"Subarray {minArray.ReaderId} emptied.");
                     continue;
                 }
+
+                counter++;
             }
 
             Logger.Log($"Output saved to: {Common.FileOptions.SortedDataFile} file.");
@@ -59,7 +67,7 @@ namespace TextSorter.ExternalSort
         public static List<SubArrayProperties> SortLines(List<SubArrayProperties> currentLines)
         {
             currentLines
-                .Sort((Comparison<SubArrayProperties>)((line1, line2) =>
+                .Sort((line1, line2) =>
                 {
                     var first = line1.CurrentValue.Split('.');
                     var firstNumber = first[0];
@@ -69,14 +77,14 @@ namespace TextSorter.ExternalSort
                     var secondNumber = second[0];
                     var secondText = second[1];
 
-                    var result = string.Compare((string)firstText, (string)secondText, StringComparison.Ordinal);
+                    var result = string.Compare(firstText, secondText, StringComparison.Ordinal);
                     if (result != 0)
                     {
                         return result;
                     }
 
-                    return int.Parse((string)firstNumber) > int.Parse((string)secondNumber) ? 1 : -1;
-                }));
+                    return int.Parse(firstNumber) > int.Parse(secondNumber) ? 1 : -1;
+                });
 
             return currentLines;
         }
