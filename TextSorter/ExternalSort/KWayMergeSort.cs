@@ -12,15 +12,15 @@ namespace TextSorter.ExternalSort
             this.sortedFiles = sortedFiles;
         }
 
-        public async Task<List<LineDetails>> InitializeReaders()
+        public async Task<List<SubArrayProperties>> InitializeReaders()
         {
             var readers = new StreamReader[sortedFiles.Count];
-            var lines = new List<LineDetails>(sortedFiles.Count);
+            var subArrays = new List<SubArrayProperties>(sortedFiles.Count);
             for (int i = 0; i < sortedFiles.Count; i++)
             {
                 var sortedFileStream = File.OpenRead(sortedFiles[i]);
                 readers[i] = new StreamReader(sortedFileStream, Encoding.UTF8, bufferSize: DataConfig.BufferSize25MB);
-                lines.Add(new LineDetails
+                subArrays.Add(new SubArrayProperties
                 {
                     Reader = readers[i],
                     ReaderId = i,
@@ -28,7 +28,7 @@ namespace TextSorter.ExternalSort
                 });
             }
 
-            return lines;
+            return subArrays;
         }
 
         public async Task Process()
@@ -66,7 +66,7 @@ namespace TextSorter.ExternalSort
         }
 
         [Obsolete("Slower than SortText3")]
-        public static List<LineDetails> SortLines(List<LineDetails> currentLines)
+        public static List<SubArrayProperties> SortLines(List<SubArrayProperties> currentLines)
         {
             currentLines
                 .Sort((line1, line2) =>
@@ -91,7 +91,7 @@ namespace TextSorter.ExternalSort
             return currentLines;
         }
 
-        public static List<LineDetails> SortLines3(List<LineDetails> currentLines)
+        public static List<SubArrayProperties> SortLines3(List<SubArrayProperties> currentLines)
         {
             currentLines
                 .Sort((line1, line2) =>

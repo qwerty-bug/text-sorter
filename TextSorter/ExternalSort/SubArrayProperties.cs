@@ -1,6 +1,6 @@
 ﻿namespace TextSorter.ExternalSort
 {
-    public class LineDetails
+    public class SubArrayProperties
     {
         public required StreamReader Reader { get; set; }
         public string Value { get; set; } = string.Empty;

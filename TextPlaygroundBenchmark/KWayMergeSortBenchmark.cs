@@ -9,14 +9,14 @@ namespace TextPlaygroundBenchmark
     public class KWayMergeSortBenchmark
     {
         private const int TestReaderId = 199;
-        private readonly List<LineDetails> UnsortedRows;
+        private readonly List<SubArrayProperties> UnsortedRows;
 
         public KWayMergeSortBenchmark()
         {
             UnsortedRows = DataHelper
                 .LoadUnsortedRows()
                 .Take(100)
-                .Select(x => new LineDetails
+                .Select(x => new SubArrayProperties
                 {
                         Value = x,
                         Reader = StreamReader.Null,
@@ -26,14 +26,14 @@ namespace TextPlaygroundBenchmark
         }
 
         [Benchmark(Baseline = true)]
-        public List<LineDetails> Sort()
+        public List<SubArrayProperties> Sort()
         {
             var sortedLines = KWayMergeSort.SortLines(UnsortedRows);
             return sortedLines;
         }
 
         [Benchmark]
-        public List<LineDetails> Sort3()
+        public List<SubArrayProperties> Sort3()
         {
             var sortedLines = KWayMergeSort.SortLines3(UnsortedRows);
             return sortedLines;

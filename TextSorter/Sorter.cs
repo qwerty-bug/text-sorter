@@ -15,8 +15,6 @@ namespace TextSorter
             Logger.Log("-----------------------------------");
             Logger.Log($"{DataConfig.SampleDataFile} file splitted into {tempFiles.Count()} sorted tempFiles.");
 
-            Logger.Log("All sorted data saved in temp files.");
-
             var extSort = new KWayMergeSort(tempFiles);
             await extSort.Process();
 
