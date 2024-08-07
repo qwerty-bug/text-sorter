@@ -10,7 +10,7 @@ Logger.Log($"--------------------------------------------");
 
 GlobalTimer.StartNew();
 var sorter = new Sorter();
-await sorter.Process();
+sorter.Process();
 
 Logger.Log($"============================================");
 Logger.Log($"Total processing time: {GlobalTimer.StopWatch.Elapsed.TotalSeconds}s.");

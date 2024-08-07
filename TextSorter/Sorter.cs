@@ -6,7 +6,7 @@ namespace TextSorter
 {
     public class Sorter
     {
-        public async Task Process()
+        public void Process()
         {
             Logger.Log($"Start processing file.");
             Logger.Log("-----------------------------------");
@@ -16,7 +16,7 @@ namespace TextSorter
             Logger.Log($"{Common.FileOptions.SampleDataFile} file splitted into {tempFiles.Count()} sorted tempFiles.");
 
             var extSort = new KWayMergeSort(tempFiles);
-            await extSort.Process();
+            extSort.Process();
 
             CleanUp(tempFiles);
 

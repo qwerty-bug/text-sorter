@@ -20,13 +20,6 @@ namespace TextPlaygroundBenchmark
         [Benchmark(Baseline = true)]
         public List<SubArrayProperties> Sort()
         {
-            var sortedLines = KWayMergeSort.SortLines(UnsortedRows);
-            return sortedLines;
-        }
-
-        [Benchmark]
-        public List<SubArrayProperties> Sort3()
-        {
             var sortedLines = KWayMergeSort.SortLines3(UnsortedRows);
             return sortedLines;
         }
