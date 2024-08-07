@@ -1,6 +1,7 @@
 ﻿using Common;
 using System.Text;
 using TextSorter.ExternalSort;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace TextSorter
 {
@@ -14,7 +15,7 @@ namespace TextSorter
             var lines = new List<string>();
 
             var fileStream = File.OpenRead(baseFile);
-            using (StreamReader reader = new StreamReader(fileStream, Encoding.UTF8, bufferSize: SorterFileConfig.BufferSize25MB))
+            using (StreamReader reader = new StreamReader(fileStream, Encoding.UTF8, bufferSize: Common.FileOptions.BufferSize8MB))
             {
                 var line = string.Empty;
                 while (!reader.EndOfStream)
@@ -26,14 +27,12 @@ namespace TextSorter
                     lines.Add(line);
 
                     fileSize += Encoding.UTF8.GetByteCount(line);
-                    if (fileSize >= SorterFileConfig.Size100MB)
+                    if (fileSize >= Common.FileOptions.Size100MB)
                     {
                         var tempList = new List<string>(lines);
                         var id = chunkId;
-                        sortTasks.Add(Task.Run(() =>
-                        {
-                            return SortAndSave(id, tempList);
-                        }));
+                        sortTasks.Add(
+                            Task.Run(() => SortAndSave(id, tempList)));
 
                         lines = new List<string>();
                         fileSize = 0;
@@ -43,7 +42,7 @@ namespace TextSorter
                 }
             }
 
-            //last run
+            //remaining text
             if (lines.Count > 0)
             {
                 sortTasks.Add(
@@ -57,10 +56,20 @@ namespace TextSorter
 
         private static string SortAndSave(int chunkId, List<string> lines)
         {
-            Logger.Log($"Chunk {chunkId} start sorting...");
+            Logger.Log($"Chunk {chunkId} start sorting..");
             SortText3(lines, chunkId);
-            var repo = new FileRepository();
-            return repo.Persist(chunkId, lines);
+
+            Logger.Log($"Chunk: {chunkId} of data sorted");
+
+            var fileName = Common.FileOptions.GetSortedTempDataFileName(chunkId);
+            using StreamWriter writer = new StreamWriter(fileName, false, Encoding.UTF8, bufferSize: Common.FileOptions.BufferSize8MB);
+            foreach (string line in lines)
+            {
+                writer.WriteLine(line);
+            }
+
+            Logger.Log($"File {fileName} saved");
+            return fileName;
         }
 
         [Obsolete("Slower than SortText3")]
@@ -93,8 +102,6 @@ namespace TextSorter
         public static List<string> SortText3(List<string> text, int chunkId)
         {
             text.Sort(Sort2Lines);
-            Logger.Log($"Chunk: {chunkId} of data sorted");
-
             return text;
         }
 

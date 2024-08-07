@@ -2,7 +2,7 @@
 {
     public static class DataHelper
     {
-        public static List<string> UnsortedRows = new List<string>
+        public static List<string> UnsortedRows = new()
         {
             "725865884. Dress Scarf Sweater Green Jeans",
             "578713939. And Jeans is Green Scarf Sweater Dress Jeans Black Blue Scarf is Dress Jeans",

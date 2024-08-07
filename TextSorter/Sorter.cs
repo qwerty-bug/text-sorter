@@ -11,9 +11,9 @@ namespace TextSorter
             Logger.Log($"Start processing file.");
             Logger.Log("-----------------------------------");
 
-            var tempFiles = Worker.SplitIntoChunks(SorterFileConfig.SampleDataFile);
+            var tempFiles = Worker.SplitIntoChunks(Common.FileOptions.SampleDataFile);
             Logger.Log("-----------------------------------");
-            Logger.Log($"{SorterFileConfig.SampleDataFile} file splitted into {tempFiles.Count()} sorted tempFiles.");
+            Logger.Log($"{Common.FileOptions.SampleDataFile} file splitted into {tempFiles.Count()} sorted tempFiles.");
 
             var extSort = new KWayMergeSort(tempFiles);
             await extSort.Process();

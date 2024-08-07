@@ -8,12 +8,12 @@ namespace DataGenerator
 
         public void Generate(int dataGBLimit)
         {
-            if (File.Exists(SorterFileConfig.SampleDataFile))
+            if (File.Exists(Common.FileOptions.SampleDataFile))
             {
-                File.Delete(SorterFileConfig.SampleDataFile);
+                File.Delete(Common.FileOptions.SampleDataFile);
             }
 
-            Logger.Log($"Start generating {dataGBLimit}GB of text data ...");
+            Logger.Log($"Start generating {dataGBLimit}GB of text data..");
 
             var repo = new FileRepository();
             for (int i = 0; i < dataGBLimit; i++)
@@ -21,24 +21,25 @@ namespace DataGenerator
                 var tasks = new Task[NumberOfTasks];
                 for (int t = 0; t < NumberOfTasks; t++)
                 {
+                    var chunk = t;
                     tasks[t] = Task
                         .Run(() =>
                         {
                             var result = TextTool.GetChunk();
-                            Logger.Log($"Created data for {i + 1}GB of {dataGBLimit}GB...");
+                            Logger.Log($"Created part {chunk + 1}/10 for {i+1}GB of total {dataGBLimit}GB");
                             return result;
                         })
                         .ContinueWith(dataTask =>
                         {
-                            repo.Save(dataTask.Result, SorterFileConfig.SampleDataFile);
-                            Logger.Log($"Saved data for {i + 1}GB of {dataGBLimit}GB...");
+                            repo.Save(dataTask.Result, Common.FileOptions.SampleDataFile);
+                            Logger.Log($"Saved part {chunk + 1}/10 for {i + 1}GB of total {dataGBLimit}GB");
                         });
                 }
                 Task.WaitAll(tasks);
-                Logger.Log($"Text {i + 1}GB of {dataGBLimit}GB saved successfully.");
+                Logger.Log($"Data part {i + 1}GB of {dataGBLimit}GB saved successfully.");
             }
 
-            Logger.Log($"All data saved successfully in: {SorterFileConfig.SampleDataFile}.");
+            Logger.Log($"All data saved successfully in: {Common.FileOptions.SampleDataFile}.");
         }
     }
 }

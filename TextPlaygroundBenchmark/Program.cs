@@ -3,5 +3,5 @@
 using BenchmarkDotNet.Running;
 using TextPlaygroundBenchmark;
 
-//var workerBenchmark = BenchmarkRunner.Run<WorkerBenchmark>();
-var kWayMergeSortBenchmark = BenchmarkRunner.Run<KWayMergeSortBenchmark>();
+//BenchmarkRunner.Run<WorkerBenchmark>();
+BenchmarkRunner.Run<KWayMergeSortBenchmark>();

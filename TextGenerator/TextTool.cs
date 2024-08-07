@@ -36,7 +36,7 @@ namespace DataGenerator
                 text.Append(textLine);
                 fileSize += Encoding.UTF8.GetByteCount(textLine.ToString());
 
-                if (fileSize >= SorterFileConfig.Size100MB)
+                if (fileSize >= Common.FileOptions.Size100MB)
                     break;
 
                 text.AppendLine();

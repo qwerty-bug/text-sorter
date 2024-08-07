@@ -8,7 +8,6 @@ namespace TextPlaygroundBenchmark
     [SimpleJob(RuntimeMoniker.Net80)]
     public class KWayMergeSortBenchmark
     {
-        private const int TestReaderId = 199;
         private readonly List<SubArrayProperties> UnsortedRows;
 
         public KWayMergeSortBenchmark()

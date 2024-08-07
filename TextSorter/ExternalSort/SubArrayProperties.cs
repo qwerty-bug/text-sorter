@@ -9,7 +9,7 @@ namespace TextSorter.ExternalSort
     {
         private bool _disposedValue;
         private SafeHandle? _safeHandle = new SafeFileHandle(IntPtr.Zero, true);
-        private StreamReader reader;
+        private readonly StreamReader reader;
 
         public int ReaderId { get; private set; }
         public string? CurrentValue { get; private set; }
@@ -19,7 +19,7 @@ namespace TextSorter.ExternalSort
             ReaderId = readerId;
 
             var fileStream = File.OpenRead(fileName);
-            reader = new StreamReader(fileStream, Encoding.UTF8, bufferSize: SorterFileConfig.BufferSize25MB);
+            reader = new StreamReader(fileStream, Encoding.UTF8, bufferSize: Common.FileOptions.BufferSize8MB);
 
             CurrentValue = ReadNextLine();
         }
