@@ -13,10 +13,8 @@ namespace TextPlaygroundBenchmark
 
         public KWayMergeSortBenchmark()
         {
-            UnsortedRows = DataHelper
-                .LoadUnsortedRows()
-                .Take(100)
-                .Select(x => new SubArrayProperties("SampleData100.txt", TestReaderId))
+            UnsortedRows = Enumerable.Range(1,10)
+                .Select(i => new SubArrayProperties("SampleData100.txt", i))
                 .ToList();
         }
 

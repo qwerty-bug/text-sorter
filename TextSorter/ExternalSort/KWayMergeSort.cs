@@ -27,8 +27,8 @@ namespace TextSorter.ExternalSort
         {
             var subarrays = Initialize();
 
-            var output = File.OpenWrite(DataConfig.SortedDataFile);
-            using var outputWriter = new StreamWriter(output, bufferSize: DataConfig.BufferSize25MB);
+            var output = File.OpenWrite(SorterFileConfig.SortedDataFile);
+            using var outputWriter = new StreamWriter(output, bufferSize: SorterFileConfig.BufferSize25MB);
 
             while (true)
             {
@@ -52,7 +52,7 @@ namespace TextSorter.ExternalSort
                 }
             }
 
-            Logger.Log($"Output saved to: {DataConfig.SortedDataFile} file.");
+            Logger.Log($"Output saved to: {SorterFileConfig.SortedDataFile} file.");
         }
 
         [Obsolete("Slower than SortText3")]

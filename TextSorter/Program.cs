@@ -4,7 +4,7 @@ using TextSorter;
 
 Logger.Log($"Hello, Text Sorter!");
 Logger.Log($"============================================");
-Logger.Log($"Data loaded from file: '{DataConfig.SampleDataFile}'.");
+Logger.Log($"Data loaded from file: '{SorterFileConfig.SampleDataFile}'.");
 Logger.Log($"--------------------------------------------");
 
 

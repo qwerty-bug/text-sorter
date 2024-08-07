@@ -21,7 +21,15 @@
 
         public static List<string> LoadUnsortedRows()
         {
-            var data = File.ReadAllLines("SampleData100.txt");
+            var data = File.ReadAllLines("SampleData100.txt").ToList();
+            foreach (var i in Enumerable.Range(0, 10))
+            {
+                foreach (var j in Enumerable.Range(0, data.Count))
+                {
+                    data.Add($"{data[j]} test aaa{i}");
+                }
+            }
+
             return data.ToList();
         }
     }

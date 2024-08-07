@@ -1,6 +1,6 @@
 ﻿namespace Common
 {
-    public static class DataConfig
+    public static class SorterFileConfig
     {
         public const string SampleDataFile = "SampleData.txt";
         public const string SortedDataFile = "SortedData.txt";

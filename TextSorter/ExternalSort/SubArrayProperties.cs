@@ -19,7 +19,7 @@ namespace TextSorter.ExternalSort
             ReaderId = readerId;
 
             var fileStream = File.OpenRead(fileName);
-            reader = new StreamReader(fileStream, Encoding.UTF8, bufferSize: DataConfig.BufferSize25MB);
+            reader = new StreamReader(fileStream, Encoding.UTF8, bufferSize: SorterFileConfig.BufferSize25MB);
 
             CurrentValue = ReadNextLine();
         }

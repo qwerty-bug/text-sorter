@@ -6,7 +6,6 @@ namespace TextSorter
 {
     public static class Worker
     {
-        //return list of created files
         public static List<string> SplitIntoChunks(string baseFile)
         {
             int chunkId = 0;
@@ -15,7 +14,7 @@ namespace TextSorter
             var lines = new List<string>();
 
             var fileStream = File.OpenRead(baseFile);
-            using (StreamReader reader = new StreamReader(fileStream, Encoding.UTF8, bufferSize: DataConfig.BufferSize25MB))
+            using (StreamReader reader = new StreamReader(fileStream, Encoding.UTF8, bufferSize: SorterFileConfig.BufferSize25MB))
             {
                 var line = string.Empty;
                 while (!reader.EndOfStream)
@@ -27,7 +26,7 @@ namespace TextSorter
                     lines.Add(line);
 
                     fileSize += Encoding.UTF8.GetByteCount(line);
-                    if (fileSize >= DataConfig.Size100MB)
+                    if (fileSize >= SorterFileConfig.Size100MB)
                     {
                         var tempList = new List<string>(lines);
                         var id = chunkId;

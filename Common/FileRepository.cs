@@ -46,52 +46,10 @@ namespace Common
             }
         }
 
-        ////return list of created files
-        //public IEnumerable<string> SplitIntoChunks(string baseFile)
-        //{
-        //    int id = 0;
-        //    var fileSize = 0;
-        //    var stringBuffer = new StringBuilder();
-        //    var chunkNames = new List<string>();
-        //    var fileStream = File.OpenRead(baseFile);
-        //    using (StreamReader reader = new StreamReader(fileStream, Encoding.UTF8, bufferSize: DataConfig.BufferSize128KB))
-        //    {
-        //        var line = string.Empty;
-        //        while (!reader.EndOfStream)
-        //        {
-        //            line = reader.ReadLine();
-        //            if (line is null)
-        //                break;
-
-        //            stringBuffer.AppendLine(line);
-
-        //            fileSize += Encoding.UTF8.GetByteCount(line);
-        //            if (fileSize >= DataConfig.Size100MB)
-        //            {
-        //                Worker.SortText
-
-        //                chunkNames.Add(Persist(id, stringBuffer));
-        //                stringBuffer.Clear();
-        //                fileSize = 0;
-        //                id++;
-        //            }
-
-        //        }
-        //    }
-
-        //    //last run
-        //    if (stringBuffer.Length > 0)
-        //    {
-        //        chunkNames.Add(Persist(id, stringBuffer));
-        //    }
-
-        //    return chunkNames;
-        //}
-
         public string Persist(int id, StringBuilder stringBuffer)
         {
-            var file = DataConfig.GetUnsortedTempDataFileName(id);
-            using (StreamWriter writer = new StreamWriter(file, false, Encoding.UTF8, bufferSize: DataConfig.BufferSize25MB))
+            var file = SorterFileConfig.GetUnsortedTempDataFileName(id);
+            using (StreamWriter writer = new StreamWriter(file, false, Encoding.UTF8, bufferSize: SorterFileConfig.BufferSize25MB))
             {
                 writer.Write(stringBuffer.ToString());
             }
@@ -101,8 +59,8 @@ namespace Common
 
         public string Persist(int id, IReadOnlyList<string> text)
         {
-            var fileName = DataConfig.GetSortedTempDataFileName(id);
-            using (StreamWriter writer = new StreamWriter(fileName, false, Encoding.UTF8, bufferSize: DataConfig.BufferSize25MB))
+            var fileName = SorterFileConfig.GetSortedTempDataFileName(id);
+            using (StreamWriter writer = new StreamWriter(fileName, false, Encoding.UTF8, bufferSize: SorterFileConfig.BufferSize25MB))
             {
                 foreach (string line in text)
                 {
