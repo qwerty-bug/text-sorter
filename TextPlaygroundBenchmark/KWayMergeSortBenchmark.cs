@@ -16,12 +16,7 @@ namespace TextPlaygroundBenchmark
             UnsortedRows = DataHelper
                 .LoadUnsortedRows()
                 .Take(100)
-                .Select(x => new SubArrayProperties
-                {
-                        Value = x,
-                        Reader = StreamReader.Null,
-                        ReaderId = TestReaderId
-                })
+                .Select(x => new SubArrayProperties("SampleData100.txt", TestReaderId))
                 .ToList();
         }
 

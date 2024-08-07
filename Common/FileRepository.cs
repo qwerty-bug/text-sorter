@@ -110,7 +110,7 @@ namespace Common
                 }
             }
 
-            Logger.Log($"File {fileName} saved.");
+            Logger.Log($"File {fileName} saved");
             return fileName;
         }
 

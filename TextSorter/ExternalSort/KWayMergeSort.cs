@@ -12,20 +12,12 @@ namespace TextSorter.ExternalSort
             this.sortedFiles = sortedFiles;
         }
 
-        public async Task<List<SubArrayProperties>> InitializeReaders()
+        public List<SubArrayProperties> Initialize()
         {
-            var readers = new StreamReader[sortedFiles.Count];
             var subArrays = new List<SubArrayProperties>(sortedFiles.Count);
             for (int i = 0; i < sortedFiles.Count; i++)
             {
-                var sortedFileStream = File.OpenRead(sortedFiles[i]);
-                readers[i] = new StreamReader(sortedFileStream, Encoding.UTF8, bufferSize: DataConfig.BufferSize25MB);
-                subArrays.Add(new SubArrayProperties
-                {
-                    Reader = readers[i],
-                    ReaderId = i,
-                    Value = await readers[i].ReadLineAsync() ?? string.Empty
-                });
+                subArrays.Add(new SubArrayProperties(sortedFiles[i], i));
             }
 
             return subArrays;
@@ -33,33 +25,31 @@ namespace TextSorter.ExternalSort
 
         public async Task Process()
         {
-            var currentLines = await InitializeReaders();
+            var subarrays = Initialize();
 
             var output = File.OpenWrite(DataConfig.SortedDataFile);
-            await using var outputWriter = new StreamWriter(output, bufferSize: DataConfig.BufferSize25MB);
+            using var outputWriter = new StreamWriter(output, bufferSize: DataConfig.BufferSize25MB);
 
             while (true)
             {
-                if (currentLines.Count == 0)
+                if (subarrays.Count == 0)
                 {
                     Logger.Log($"Completed sorting");
                     break;
                 }
 
-                SortLines3(currentLines);
+                SortLines3(subarrays);
 
-                var minLine = currentLines.First();
-                await outputWriter.WriteLineAsync(minLine.Value);
+                var minArray = subarrays.First();
+                await outputWriter.WriteLineAsync(minArray.CurrentValue);
 
-                var newVal = await minLine.Reader.ReadLineAsync();
+                var newVal = minArray.ReadNextLine();
                 if (newVal is null)
                 {
-                    currentLines.Remove(minLine);
-                    minLine.Reader.Dispose();
+                    subarrays.Remove(minArray);
+                    minArray.Dispose();
                     continue;
                 }
-
-                minLine.Value = newVal;
             }
 
             Logger.Log($"Output saved to: {DataConfig.SortedDataFile} file.");
@@ -69,24 +59,24 @@ namespace TextSorter.ExternalSort
         public static List<SubArrayProperties> SortLines(List<SubArrayProperties> currentLines)
         {
             currentLines
-                .Sort((line1, line2) =>
+                .Sort((Comparison<SubArrayProperties>)((line1, line2) =>
                 {
-                    var first = line1.Value.Split('.');
+                    var first = line1.CurrentValue.Split('.');
                     var firstNumber = first[0];
                     var firstText = first[1];
 
-                    var second = line2.Value.Split('.');
+                    var second = line2.CurrentValue.Split('.');
                     var secondNumber = second[0];
                     var secondText = second[1];
 
-                    var result = string.Compare(firstText, secondText, StringComparison.Ordinal);
+                    var result = string.Compare((string)firstText, (string)secondText, StringComparison.Ordinal);
                     if (result != 0)
                     {
                         return result;
                     }
 
-                    return int.Parse(firstNumber) > int.Parse(secondNumber) ? 1 : -1;
-                });
+                    return int.Parse((string)firstNumber) > int.Parse((string)secondNumber) ? 1 : -1;
+                }));
 
             return currentLines;
         }
@@ -96,7 +86,7 @@ namespace TextSorter.ExternalSort
             currentLines
                 .Sort((line1, line2) =>
                 {
-                    return Worker.Sort2Lines(line1.Value, line2.Value);
+                    return Worker.Sort2Lines(line1.CurrentValue, line2.CurrentValue);
                 });
 
             return currentLines;
