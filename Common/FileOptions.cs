@@ -7,6 +7,7 @@
         public static string GetUnsortedTempDataFileName(int id) => $"TempData{id}.txt";
         public static string GetSortedTempDataFileName(int id) => $"SortedTempData{id}.txt";
         public const int Size1GB = 1073741824; //1024*1024*100
+        public const int Size500MB = 524288000; //1024*1024*500
         public const int Size100MB = 104857600; //1024*1024*100
         public const int Size50MB = 52428800; //1024*1024*50
         public const int BufferSize32MB = 33554432; //1024*1024*10

@@ -1,7 +1,5 @@
 ﻿using Common;
 using System.Text;
-using TextSorter.ExternalSort;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace TextSorter
 {
@@ -27,7 +25,7 @@ namespace TextSorter
                     lines.Add(line);
 
                     fileSize += Encoding.UTF8.GetByteCount(line);
-                    if (fileSize >= Common.FileOptions.Size100MB)
+                    if (fileSize >= Common.FileOptions.Size500MB)
                     {
                         var tempList = new List<string>(lines);
                         var id = chunkId;
@@ -36,13 +34,6 @@ namespace TextSorter
 
                         lines = new List<string>();
                         fileSize = 0;
-
-                        //process 1Gb at a time
-                        //if (chunkId == 9)
-                        //{
-                        //    Task.WaitAny(sortTasks.ToArray());
-                        //    Logger.Log($"Staging part {chunkId/10+1}..");
-                        //}
 
                         chunkId++;
                     }
