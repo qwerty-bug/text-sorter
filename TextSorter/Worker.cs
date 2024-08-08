@@ -87,14 +87,12 @@ namespace TextSorter
 
         public static int Sort2Lines(string line1, string line2)
         {
-            var sepPos1 = line1.IndexOf('.');
+            var sepPos1 = line1.IndexOf('.', StringComparison.Ordinal);
             var span1 = line1.AsSpan();
-            var firstN = span1.Slice(0, sepPos1);
             var firstS = span1.Slice(sepPos1 + 2);
 
-            var sepPos2 = line2.IndexOf('.');
+            var sepPos2 = line2.IndexOf('.', StringComparison.Ordinal);
             var span2 = line2.AsSpan();
-            var secondN = span2.Slice(0, sepPos2);
             var secondS = span2.Slice(sepPos2 + 2);
 
             var result = firstS.CompareTo(secondS, StringComparison.Ordinal);
@@ -103,6 +101,8 @@ namespace TextSorter
                 return result;
             }
 
+            var firstN = span1.Slice(0, sepPos1);
+            var secondN = span2.Slice(0, sepPos2);
             return int.Parse(firstN) > int.Parse(secondN) ? 1 : -1;
         }
     }

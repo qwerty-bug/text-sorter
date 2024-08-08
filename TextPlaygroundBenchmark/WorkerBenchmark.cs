@@ -28,18 +28,19 @@ namespace TextPlaygroundBenchmark
         //    return text;
         //}
 
-        //[Benchmark]
-        //public List<string> Sort3()
-        //{
-        //    var text = Worker.SortText3(UnsortedRows, TestChunkId);
-        //    return text;
-        //}
 
         [Benchmark(Baseline = true)]
         public int Sort()
         {
-            var text = Worker.Sort2Lines(FirstRow, SecondRow);
-            return text;
+            var result = Worker.Sort2Lines(FirstRow, SecondRow);
+            return result;
         }
+
+        //[Benchmark]
+        //public int Sort2()
+        //{
+        //    var result = Worker.Sort2Lines2(FirstRow, SecondRow);
+        //    return result;
+        //}
     }
 }

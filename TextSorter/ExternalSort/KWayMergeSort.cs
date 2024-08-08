@@ -43,7 +43,7 @@ namespace TextSorter.ExternalSort
                     break;
                 }
 
-                SortLines3(subarrays);
+                SortLines(subarrays);
 
                 var minArray = subarrays.First();
                 outputWriter.WriteLine(minArray.CurrentValue);
@@ -71,7 +71,7 @@ namespace TextSorter.ExternalSort
             Logger.Log($"Output saved to: {Common.FileOptions.SortedDataFile} file.");
         }
 
-        public static List<SubArrayProperties> SortLines3(List<SubArrayProperties> currentLines)
+        public static List<SubArrayProperties> SortLines(List<SubArrayProperties> currentLines)
         {
             currentLines
                 .Sort((line1, line2) =>
