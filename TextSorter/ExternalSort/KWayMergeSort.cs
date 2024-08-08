@@ -4,13 +4,6 @@ namespace TextSorter.ExternalSort
 {
     public class KWayMergeSort
     {
-        private readonly IReadOnlyList<string> sortedFiles;
-
-        //public KWayMergeSort(IReadOnlyList<string> sortedFiles)
-        //{
-        //    this.sortedFiles = sortedFiles;
-        //}
-
         public List<SubArrayProperties> Initialize(IReadOnlyList<string> sortedFiles)
         {
             var subArrays = new List<SubArrayProperties>(sortedFiles.Count);
@@ -26,23 +19,23 @@ namespace TextSorter.ExternalSort
         {
             var files = new List<string>(sortedFiles);
             int i = 0;
-            //if(sortedFiles.Count > 10)
             while(files.Count > 10)
             {
-                var toProcess = sortedFiles.Skip(i*10).Take(10).ToList();
-                files.RemoveAll(x => toProcess.Contains(x));
+                var toProcess = files.Take(10).ToList();
                 files.Add(Process(i, toProcess));
+                files.RemoveAll(x => toProcess.Contains(x));
                 i++;
             }
 
             var subarrays = Initialize(files);
 
-            var outputFile = $"{id}{Common.FileOptions.SortedDataFile}";
+            var outputFile = $"{Math.Abs(DateTime.Now.GetHashCode())}{Common.FileOptions.SortedDataFile}";
             if(id == -1)
                 outputFile = Common.FileOptions.SortedDataFile;
 
             var output = File.OpenWrite(outputFile);
             using var outputWriter = new StreamWriter(output, bufferSize: Common.FileOptions.BufferSize32MB);
+            FileCleaner.Add(outputFile);
 
             Logger.Log($"Start final sorting with {subarrays.Count} parts.");
             int counter = 1;

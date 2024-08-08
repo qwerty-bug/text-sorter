@@ -13,6 +13,7 @@ namespace Common
             {
                 using StreamWriter writer = new StreamWriter(fileName, true, Encoding.UTF8, FileOptions.BufferSize32MB);
                 writer.Write(data);
+                FileCleaner.Add(fileName);
             }
             finally
             {

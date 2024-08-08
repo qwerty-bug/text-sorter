@@ -25,7 +25,7 @@ namespace TextSorter
                     lines.Add(line);
 
                     fileSize += Encoding.UTF8.GetByteCount(line);
-                    if (fileSize >= Common.FileOptions.Size50MB)
+                    if (fileSize >= Common.FileOptions.Size200MB)
                     {
                         var tempList = new List<string>(lines);
                         var id = chunkId;
@@ -67,6 +67,7 @@ namespace TextSorter
             }
 
             Logger.Log($"File {fileName} saved");
+            FileCleaner.Add(fileName);
             return fileName;
         }
 
