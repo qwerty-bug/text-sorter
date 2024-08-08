@@ -25,7 +25,7 @@ namespace TextSorter
                     lines.Add(line);
 
                     fileSize += Encoding.UTF8.GetByteCount(line);
-                    if (fileSize >= Common.FileOptions.Size500MB)
+                    if (fileSize >= Common.FileOptions.Size50MB)
                     {
                         var tempList = new List<string>(lines);
                         var id = chunkId;

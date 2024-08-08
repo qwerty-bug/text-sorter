@@ -27,6 +27,9 @@ namespace TextSorter.ExternalSort
         public string? ReadNextLine()
         {
             CurrentValue = reader.ReadLine();
+            if (CurrentValue == "")
+                CurrentValue = reader.ReadLine();
+
             return CurrentValue;
         }
 

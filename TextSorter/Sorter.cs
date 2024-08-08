@@ -15,10 +15,11 @@ namespace TextSorter
             Logger.Log("-----------------------------------");
             Logger.Log($"{Common.FileOptions.SampleDataFile} file splitted into {tempFiles.Count()} sorted tempFiles.");
 
-            var extSort = new KWayMergeSort(tempFiles);
-            extSort.Process();
+            var filesToDelete = new List<string>(tempFiles);
+            var extSort = new KWayMergeSort();
+            extSort.Process(-1, tempFiles);
 
-            CleanUp(tempFiles);
+            CleanUp(filesToDelete);
 
             Logger.Log($"Data sorted successfully.");
         }

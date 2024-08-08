@@ -1,5 +1,4 @@
 ﻿using Common;
-using System.Text;
 
 namespace TextSorter.ExternalSort
 {
@@ -7,12 +6,12 @@ namespace TextSorter.ExternalSort
     {
         private readonly IReadOnlyList<string> sortedFiles;
 
-        public KWayMergeSort(IReadOnlyList<string> sortedFiles)
-        {
-            this.sortedFiles = sortedFiles;
-        }
+        //public KWayMergeSort(IReadOnlyList<string> sortedFiles)
+        //{
+        //    this.sortedFiles = sortedFiles;
+        //}
 
-        public List<SubArrayProperties> Initialize()
+        public List<SubArrayProperties> Initialize(IReadOnlyList<string> sortedFiles)
         {
             var subArrays = new List<SubArrayProperties>(sortedFiles.Count);
             for (int i = 0; i < sortedFiles.Count; i++)
@@ -23,11 +22,26 @@ namespace TextSorter.ExternalSort
             return subArrays;
         }
 
-        public void Process()
+        public string Process(int id, List<string> sortedFiles)
         {
-            var subarrays = Initialize();
+            var files = new List<string>(sortedFiles);
+            int i = 0;
+            //if(sortedFiles.Count > 10)
+            while(files.Count > 10)
+            {
+                var toProcess = sortedFiles.Skip(i*10).Take(10).ToList();
+                files.RemoveAll(x => toProcess.Contains(x));
+                files.Add(Process(i, toProcess));
+                i++;
+            }
 
-            var output = File.OpenWrite(Common.FileOptions.SortedDataFile);
+            var subarrays = Initialize(files);
+
+            var outputFile = $"{id}{Common.FileOptions.SortedDataFile}";
+            if(id == -1)
+                outputFile = Common.FileOptions.SortedDataFile;
+
+            var output = File.OpenWrite(outputFile);
             using var outputWriter = new StreamWriter(output, bufferSize: Common.FileOptions.BufferSize32MB);
 
             Logger.Log($"Start final sorting with {subarrays.Count} parts.");
@@ -68,7 +82,9 @@ namespace TextSorter.ExternalSort
             }
 
             Logger.Log($"Average time per 1000000: {timings.Average()}");
-            Logger.Log($"Output saved to: {Common.FileOptions.SortedDataFile} file.");
+            Logger.Log($"Output saved to: {outputFile} file.");
+
+            return outputFile;
         }
 
         public static List<SubArrayProperties> SortLines(List<SubArrayProperties> currentLines)
