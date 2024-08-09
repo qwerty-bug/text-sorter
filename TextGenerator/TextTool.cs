@@ -1,11 +1,11 @@
 ﻿using Common;
 using System.Text;
 
-namespace DataGenerator
+namespace TextGenerator
 {
     public static class TextTool
     {
-        const string Text = "Green Sweater is Jeans and Dress is Jacket Scarf Red Blue Yellow Black";
+        const string Text = "green sweater is jeans and dress is jacket scarf red blue yellow black";
 
         static readonly HashSet<string> Words = new HashSet<string>();
 
@@ -36,7 +36,7 @@ namespace DataGenerator
                 text.Append(textLine);
                 fileSize += Encoding.UTF8.GetByteCount(textLine.ToString());
 
-                if (fileSize >= Common.FileOptions.Size100MB)
+                if (fileSize >= Common.FileOptions.BufferSize1MB)
                     break;
 
                 text.AppendLine();

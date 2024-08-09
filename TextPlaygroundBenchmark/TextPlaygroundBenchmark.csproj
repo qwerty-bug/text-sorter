@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TextGenerator\DataGenerator.csproj" />
+    <ProjectReference Include="..\TextGenerator\TextGenerator.csproj" />
     <ProjectReference Include="..\TextSorter\TextSorter.csproj" />
   </ItemGroup>
 

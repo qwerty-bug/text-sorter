@@ -1,6 +1,5 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using Common;
-using DataGenerator;
 
 Logger.Log($"Hello, TextGenerator!");
 Logger.Log($"============================================");
@@ -19,7 +18,7 @@ if(dataSize <= 0 ||  dataSize > 100)
 }
 
 GlobalTimer.StartNew();
-var generator = new TextGenerator();
+var generator = new TextGenerator.TextGenerator();
 generator.Generate(dataSize);
 GlobalTimer.StopWatch.Stop();
 

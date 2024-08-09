@@ -1,10 +1,10 @@
 ﻿using Common;
 
-namespace DataGenerator
+namespace TextGenerator
 {
     public class TextGenerator
     {
-        private const int NumberOfTasks = 10;
+        private const int NumberOfTasks = 1;
 
         public void Generate(int dataGBLimit)
         {
