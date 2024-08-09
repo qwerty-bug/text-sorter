@@ -4,7 +4,7 @@ namespace TextGenerator
 {
     public class TextGenerator
     {
-        private const int NumberOfTasks = 1;
+        private const int NumberOfTasks = 10;
 
         public void Generate(int dataGBLimit)
         {
