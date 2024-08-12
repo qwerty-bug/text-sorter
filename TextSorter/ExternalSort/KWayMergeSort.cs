@@ -77,7 +77,8 @@ namespace TextSorter.ExternalSort
             }
 
             Logger.Log($"Average time per 5,000,000: {timings.Average():0.000}s");
-            Logger.Log($"Output saved to: {outputFile} file.");
+            var outputText = id == -1 ? "Output" : "Temp output";
+            Logger.Log($"{outputText} saved to: {outputFile} file.");
 
             return outputFile;
         }
