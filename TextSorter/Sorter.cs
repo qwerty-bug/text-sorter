@@ -7,6 +7,8 @@ namespace TextSorter
     {
         public void Process()
         {
+            FileCleaner.CleanOutputFile();
+
             Logger.Log($"Start processing file..");
             Logger.Log("-----------------------------------");
 

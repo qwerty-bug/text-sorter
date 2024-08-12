@@ -17,5 +17,16 @@
                 File.Delete(fileName);
             }
         }
+
+        public static void CleanOutputFile()
+        {
+            File.Delete(FileOptions.SortedOutputDataFile);
+            if (File.Exists(FileOptions.SortedOutputDataFile))
+            {
+                Logger.Log($"ERROR: Cannot delete file '{FileOptions.SortedOutputDataFile}', remove file manually and restart the application.");
+                Logger.Log($"ERROR: Closing application...");
+                Environment.Exit(0);
+            }
+        }
     }
 }

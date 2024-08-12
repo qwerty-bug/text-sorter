@@ -47,7 +47,7 @@ namespace TextSorter.ExternalSort
             {
                 if (subarrays.Count == 0)
                 {
-                    Logger.Log("---------------------");
+                    Logger.Log("--");
                     Logger.Log($"Sorting completed");
                     break;
                 }
@@ -79,6 +79,7 @@ namespace TextSorter.ExternalSort
             Logger.Log($"Average time per 5,000,000: {timings.Average():0.000}s");
             var outputText = id == -1 ? "Output" : "Temp output";
             Logger.Log($"{outputText} saved to: {outputFile} file.");
+            Logger.Log("---------------------");
 
             return outputFile;
         }
