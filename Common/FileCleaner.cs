@@ -11,7 +11,7 @@
 
         public static void CleanFiles()
         {
-            files.Remove(FileOptions.SortedDataFile); //leave output file
+            files.Remove(FileOptions.SortedOutputDataFile); //leave output file
             foreach (string fileName in files)
             {
                 File.Delete(fileName);

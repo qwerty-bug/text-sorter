@@ -31,9 +31,9 @@ namespace TextSorter.ExternalSort
 
             var subarrays = Initialize(files);
 
-            var outputFile = $"{Math.Abs(DateTime.Now.GetHashCode())}{Common.FileOptions.SortedDataFile}";
+            var outputFile = $"{Math.Abs(DateTime.Now.GetHashCode())}{Common.FileOptions.SortedOutputDataFile}";
             if(id == -1)
-                outputFile = Common.FileOptions.SortedDataFile;
+                outputFile = Common.FileOptions.SortedOutputDataFile;
 
             var output = File.OpenWrite(outputFile);
             using var outputWriter = new StreamWriter(output, bufferSize: Common.FileOptions.BufferSize32MB);

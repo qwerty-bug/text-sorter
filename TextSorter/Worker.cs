@@ -12,6 +12,9 @@ namespace TextSorter
             var sortTasks = new List<Task<string>>();
             var lines = new List<string>();
 
+            Logger.Log($"Splitting file '{Common.FileOptions.SampleDataFile}' into chunks (each {Common.FileOptions.ChunkSize / Common.FileOptions.Size1MB}MB)");
+            Logger.Log("----");
+
             var fileStream = File.OpenRead(baseFile);
             using (StreamReader reader = new StreamReader(fileStream, Encoding.UTF8, bufferSize: Common.FileOptions.BufferSize32MB))
             {
@@ -25,7 +28,7 @@ namespace TextSorter
                     lines.Add(line);
 
                     fileSize += Encoding.UTF8.GetByteCount(line);
-                    if (fileSize >= Common.FileOptions.Size200MB)
+                    if (fileSize >= Common.FileOptions.ChunkSize)
                     {
                         var tempList = new List<string>(lines);
                         var id = chunkId;
@@ -48,7 +51,10 @@ namespace TextSorter
             }
             Task.WaitAll(sortTasks.ToArray());
 
-            Task.WaitAll(sortTasks.ToArray());
+            Logger.Log("----");
+            Logger.Log("Splitting completed.");
+            Logger.Log($"{Common.FileOptions.SampleDataFile} file splitted into {sortTasks.Count()} sorted tempFiles.");
+            Logger.Log("-----------------------------------");
 
             return sortTasks.Select( t => t.Result).ToList();
         }
@@ -61,7 +67,7 @@ namespace TextSorter
             Logger.Log($"Chunk: {chunkId} of data sorted");
 
             var fileName = Common.FileOptions.GetSortedTempDataFileName(chunkId);
-            using StreamWriter writer = new StreamWriter(fileName, false, Encoding.UTF8, bufferSize: Common.FileOptions.BufferSize8MB);
+            using StreamWriter writer = new StreamWriter(fileName, false, Encoding.UTF8, bufferSize: Common.FileOptions.BufferSize32MB);
             foreach (string line in lines)
             {
                 writer.WriteLine(line);

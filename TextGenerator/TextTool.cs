@@ -1,5 +1,4 @@
-﻿using Common;
-using System.Text;
+﻿using System.Text;
 
 namespace TextGenerator
 {
