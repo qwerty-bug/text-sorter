@@ -7,7 +7,7 @@ namespace TextSorter
     {
         public void Process()
         {
-            Logger.Log($"Start processing file.");
+            Logger.Log($"Start processing file..");
             Logger.Log("-----------------------------------");
 
             var tempFiles = Worker.SplitIntoChunks(Common.FileOptions.SampleDataFile);
