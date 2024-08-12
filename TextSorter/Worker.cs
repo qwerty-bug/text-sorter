@@ -46,6 +46,7 @@ namespace TextSorter
                 sortTasks.Add(
                     Task.Run(() => SortAndSave(chunkId, lines)));
             }
+            Task.WaitAll(sortTasks.ToArray());
 
             Task.WaitAll(sortTasks.ToArray());
 
@@ -95,7 +96,7 @@ namespace TextSorter
 
             var firstN = span1.Slice(0, sepPos1);
             var secondN = span2.Slice(0, sepPos2);
-            return int.Parse(firstN) > int.Parse(secondN) ? 1 : -1;
+            return int.Parse(firstN).CompareTo(int.Parse(secondN));
         }
     }
 }

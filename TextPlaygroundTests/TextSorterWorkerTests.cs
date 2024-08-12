@@ -77,5 +77,44 @@ namespace TextPlaygroundTests
                 .Should()
                 .BeEquivalentTo(expectedText, c => c.WithStrictOrdering());
         }
+
+        [Test]
+        public void SortTextShouldHandleDuplicatesInNumbers()
+        {
+            var expectedText = new List<string>
+            {
+                "632184622. Scarf blue green green scarf",
+                "1633935166. Scarf blue green green scarf",
+                "1633935166. Scarf blue green green scarf",
+                "1633935166. Scarf blue green green scarf",
+                "1633935166. Scarf blue green green scarf",
+                "1633935166. Scarf blue green green scarf",
+                "1633935166. Scarf blue green green scarf",
+                "1633935166. Scarf blue green green scarf",
+                "1633935166. Scarf blue green green scarf",
+                "1633935166. Scarf blue green green scarf",
+                "1633935169. Scarf blue green green scarf",
+            };
+            var textToSort = new List<string>
+            {
+                "1633935166. Scarf blue green green scarf",
+                "1633935166. Scarf blue green green scarf",
+                "632184622. Scarf blue green green scarf",
+                "1633935166. Scarf blue green green scarf",
+                "1633935166. Scarf blue green green scarf",
+                "1633935166. Scarf blue green green scarf",
+                "1633935169. Scarf blue green green scarf",
+                "1633935166. Scarf blue green green scarf",
+                "1633935166. Scarf blue green green scarf",
+                "1633935166. Scarf blue green green scarf",
+                "1633935166. Scarf blue green green scarf",
+            };
+
+            var result = Worker.SortText(textToSort);
+
+            result
+                .Should()
+                .BeEquivalentTo(expectedText, c => c.WithStrictOrdering());
+        }
     }
 }

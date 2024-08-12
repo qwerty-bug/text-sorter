@@ -19,6 +19,7 @@
         public const int BufferSize4MB = 4194304; //1024*1024*4
         public const int BufferSize2MB = 2097152; //1024*1024*2
         public const int BufferSize1MB = 1048576; //1024*1024
+        public const int BufferSize64KB = 65536; //1024*1024
 
     }
 }
