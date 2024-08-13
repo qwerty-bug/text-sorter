@@ -8,9 +8,9 @@ namespace TextGenerator
 
         public void Generate(int dataGBLimit)
         {
-            if (File.Exists(Common.FileOptions.SampleDataFile))
+            if (File.Exists(Options.SampleDataFile))
             {
-                File.Delete(Common.FileOptions.SampleDataFile);
+                File.Delete(Options.SampleDataFile);
             }
 
             Logger.Log($"Start generating {dataGBLimit}GB of text data..");
@@ -31,7 +31,7 @@ namespace TextGenerator
                         })
                         .ContinueWith(dataTask =>
                         {
-                            repo.Save(dataTask.Result, Common.FileOptions.SampleDataFile);
+                            repo.Save(dataTask.Result, Options.SampleDataFile);
                             Logger.Log($"Saved part {chunk + 1}/10 for {i + 1}GB of total {dataGBLimit}GB");
                         });
                 }
@@ -39,7 +39,7 @@ namespace TextGenerator
                 Logger.Log($"Data part {i + 1}GB of {dataGBLimit}GB saved successfully.");
             }
 
-            Logger.Log($"All data saved successfully in: {Common.FileOptions.SampleDataFile}.");
+            Logger.Log($"All data saved successfully in: {Options.SampleDataFile}.");
         }
     }
 }

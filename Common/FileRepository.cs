@@ -11,7 +11,7 @@ namespace Common
             semaphoreSlim.Wait();
             try
             {
-                using StreamWriter writer = new StreamWriter(fileName, true, Encoding.UTF8, FileOptions.BufferSize32MB);
+                using StreamWriter writer = new StreamWriter(fileName, true, Encoding.UTF8, Options.BufferSize64MB);
                 writer.Write(data);
                 FileCleaner.Add(fileName);
             }

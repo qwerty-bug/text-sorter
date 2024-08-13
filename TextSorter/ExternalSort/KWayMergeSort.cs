@@ -21,9 +21,9 @@ namespace TextSorter.ExternalSort
         {
             var files = new List<string>(sortedFiles);
             int i = 0;
-            while(files.Count > 10)
+            while(files.Count > Options.ExternalSortConcurrentLimit)
             {
-                var toProcess = files.Take(10).ToList();
+                var toProcess = files.Take(Options.ExternalSortConcurrentLimit).ToList();
                 files.Add(Process(i, toProcess));
                 files.RemoveAll(x => toProcess.Contains(x));
                 i++;
@@ -31,12 +31,12 @@ namespace TextSorter.ExternalSort
 
             var subarrays = Initialize(files);
 
-            var outputFile = $"{Math.Abs(DateTime.Now.GetHashCode())}{Common.FileOptions.SortedOutputDataFile}";
+            var outputFile = $"{DateTime.Now.GetHashCode()}{Options.SortedOutputDataFile}";
             if(id == -1)
-                outputFile = Common.FileOptions.SortedOutputDataFile;
+                outputFile = Options.SortedOutputDataFile;
 
             var output = File.OpenWrite(outputFile);
-            using var outputWriter = new StreamWriter(output, bufferSize: Common.FileOptions.BufferSize32MB);
+            using var outputWriter = new StreamWriter(output, bufferSize: Options.BufferSize64MB);
             FileCleaner.Add(outputFile);
 
             Logger.Log($"Start external sorting with {subarrays.Count} parts.");

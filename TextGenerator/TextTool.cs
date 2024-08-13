@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using Common;
+using System.Text;
 
 namespace TextGenerator
 {
@@ -35,7 +36,7 @@ namespace TextGenerator
                 text.Append(textLine);
                 fileSize += Encoding.UTF8.GetByteCount(textLine.ToString());
 
-                if (fileSize >= Common.FileOptions.Size100MB)
+                if (fileSize >= Options.Size100MB)
                     break;
 
                 text.AppendLine();

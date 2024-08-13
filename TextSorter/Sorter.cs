@@ -7,12 +7,10 @@ namespace TextSorter
     {
         public void Process()
         {
-            FileCleaner.CleanOutputFile();
-
             Logger.Log($"Start processing file..");
             Logger.Log("-----------------------------------");
 
-            var tempFiles = Worker.SplitIntoChunks(Common.FileOptions.SampleDataFile);
+            var tempFiles = Worker.SplitIntoChunks(Options.SampleDataFile);
 
             var extSort = new KWayMergeSort();
             extSort.Process(-1, tempFiles);
