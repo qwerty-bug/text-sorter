@@ -19,7 +19,7 @@ GlobalTimer.StopWatch.Stop();
 
 Logger.Log($"============================================");
 Logger.Log("");
-Logger.Log($"><><><><>><><><><><><>><><><><><><>><><");
+Logger.Log($"><><><><>><><><><><><>><><><><><><>><><><><><><><");
 Logger.Log("");
 Logger.Log($"STATS:");
 Logger.Log($" Total processing time: {GlobalTimer.StopWatch.Elapsed.TotalSeconds:0.00}s [{GlobalTimer.StopWatch.Elapsed.ToString(@"hh\:mm\:ss\.ff")}]");
@@ -27,7 +27,7 @@ Logger.Log($" Average:               {GlobalTimer.StopWatch.Elapsed.TotalSeconds
 Logger.Log($" Output file:           '{Options.SortedOutputDataFile}'");
 Logger.Log($" Output file size:      {new FileInfo(Options.SortedOutputDataFile).Length / Options.Size1GB}GB");
 Logger.Log("");
-Logger.Log($"><><><><>><><><><><><>><><><><><><>><><");
+Logger.Log($"><><><><>><><><><><><>><><><><><><>><><><><><><><");
 Logger.Log("");
 Logger.Log($"Press any key to close application...");
 
