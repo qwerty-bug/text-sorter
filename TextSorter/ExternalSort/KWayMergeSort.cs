@@ -44,7 +44,7 @@ namespace TextSorter.ExternalSort
                     jobs.Add(
                         Task.Run(() => Process(jobId * 10, group)));
 
-                    if(jobs.Where(x => !x.IsCompleted).Count() >= 3)
+                    if(jobs.Where(x => !x.IsCompleted).Count() >= Options.ExternalSortAsyncJobsLimit)
                     {
                         Task.WaitAll(jobs.ToArray());
                     }

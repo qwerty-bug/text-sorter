@@ -17,7 +17,8 @@
         public const int Size100MB = 104857600; //1024*1024*100
         public const int BufferSize64MB = 67108864; //1024*1024*64
 
-        public const int ChunkSize = 1048576; // 1MB  |  536870912; //1024*1024*512
-        public const int ExternalSortConcurrentLimit = 15;
+        public const int ChunkSize = 104857600; // 100MB  |  536870912; //1024*1024*512
+        public const int ExternalSortConcurrentLimit = 10;
+        public const int ExternalSortAsyncJobsLimit = 5;
     }
 }
