@@ -13,7 +13,7 @@ namespace TextSorter
             var tempFiles = Worker.SplitIntoChunks(Options.SampleDataFile);
 
             var extSort = new KWayMergeSort();
-            extSort.Process(-1, tempFiles);
+            extSort.Process(KWayMergeSort.InitialWorkId, tempFiles);
 
             FileCleaner.CleanFiles();
 
