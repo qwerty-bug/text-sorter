@@ -9,28 +9,36 @@ namespace TextSorter.ExternalSort
     {
         private bool _disposedValue;
         private SafeHandle? _safeHandle = new SafeFileHandle(IntPtr.Zero, true);
-        private readonly StreamReader reader;
+        private readonly Lazy<StreamReader> reader;
 
         public int ReaderId { get; private set; }
-        public string? CurrentValue { get; private set; }
+
+        private string? _currentValue = null;
+
+        public string? CurrentValue {
+            get
+            {
+                if(_currentValue is not null)
+                    return _currentValue;
+
+                ReadNextLine();
+                return _currentValue;
+            }
+        }
 
         public SubArrayProperties(string fileName, int readerId)
         {
             ReaderId = readerId;
-
-            var fileStream = File.OpenRead(fileName);
-            reader = new StreamReader(fileStream, Encoding.UTF8, bufferSize: Options.BufferSize64MB);
-
-            CurrentValue = ReadNextLine();
+            reader = new Lazy<StreamReader>(new StreamReader(File.OpenRead(fileName), Encoding.UTF8, bufferSize: Options.BufferSize64MB));
         }
 
         public string? ReadNextLine()
         {
-            CurrentValue = reader.ReadLine();
-            if (CurrentValue == "")
-                CurrentValue = reader.ReadLine();
+            _currentValue = reader.Value.ReadLine();
+            if (_currentValue == "")
+                _currentValue = reader.Value.ReadLine();
 
-            return CurrentValue;
+            return _currentValue;
         }
 
         public void Dispose()
@@ -46,7 +54,7 @@ namespace TextSorter.ExternalSort
             {
                 if (disposing)
                 {
-                    reader.Dispose();
+                    reader.Value.Dispose();
                     _safeHandle?.Dispose();
                     _safeHandle = null;
                 }

@@ -22,20 +22,19 @@ namespace TextSorter.ExternalSort
         {
             var files = new List<string>(sortedFiles);
             int i = id;
-            while(files.Count > Options.ExternalSortConcurrentLimit)
+            while(files.Count > Options.ExternalSortOpenedFilesLimit)
             {
                 var toProcessGroups = new List<List<string>>();
-                var groupsCount = files.Count / Options.ExternalSortConcurrentLimit +
-                                    (files.Count % Options.ExternalSortConcurrentLimit == 0 ? 0 : 1);
+                var groupsCount = files.Count / Options.ExternalSortOpenedFilesLimit +
+                                    (files.Count % Options.ExternalSortOpenedFilesLimit == 0 ? 0 : 1);
                 for (int g = 0; g < groupsCount; g++)
                 {
                     toProcessGroups.Add(new List<string>(
                         files
-                            .Skip(g* Options.ExternalSortConcurrentLimit)
-                            .Take(Options.ExternalSortConcurrentLimit).ToList()));
+                            .Skip(g* Options.ExternalSortOpenedFilesLimit)
+                            .Take(Options.ExternalSortOpenedFilesLimit).ToList()));
                 }
 
-                //var toProcess = files.Take(Options.ExternalSortConcurrentLimit).ToList();
                 var jobs = new List<Task<string>>();
                 foreach (var group in toProcessGroups)
                 {
@@ -56,8 +55,6 @@ namespace TextSorter.ExternalSort
                     files.Add(job.Result);
                 }
                 files.RemoveAll(x => toProcessGroups.SelectMany(x => x).Contains(x));
-
-                //i++;
             }
 
             var subarrays = Initialize(files);
@@ -70,16 +67,17 @@ namespace TextSorter.ExternalSort
             using var outputWriter = new StreamWriter(output, bufferSize: Options.BufferSize64MB);
             FileCleaner.Add(outputFile);
 
-            Logger.Log($"Id: [{id}], Start external sorting with {subarrays.Count} parts.");
+            Logger.Log($"Sort job Id: [{id}], Start external sorting with {subarrays.Count} parts.");
             int counter = 1;
-            var tempTimer = GlobalTimer.StopWatch.Elapsed.TotalSeconds;
+            double elapsedSeconds = GlobalTimer.StopWatch.Elapsed.TotalSeconds;
+            double totalElapsedSeconds = GlobalTimer.StopWatch.Elapsed.TotalSeconds;
             var timings = new List<double>();
             while (true)
             {
                 if (subarrays.Count == 0)
                 {
-                    Logger.Log($"Id: [{id}], --");
-                    Logger.Log($"Id: [{i}], Sorting completed");
+                    Logger.Log($"Sort job Id: [{id}], --");
+                    Logger.Log($"Sort job Id: [{i}], Sorting completed");
                     break;
                 }
 
@@ -89,10 +87,10 @@ namespace TextSorter.ExternalSort
                 outputWriter.WriteLine(minArray.CurrentValue);
                 if (counter % LogThreshold == 0)
                 {
-                    var time = GlobalTimer.StopWatch.Elapsed.TotalSeconds - tempTimer;
+                    var time = GlobalTimer.StopWatch.Elapsed.TotalSeconds - elapsedSeconds;
                     timings.Add(time);
-                    Logger.Log($"Id: [{id}], Processed records: {counter:n0} ({time:0.000}s per 5,000,000)");
-                    tempTimer = GlobalTimer.StopWatch.Elapsed.TotalSeconds;
+                    Logger.Log($"Sort job Id: [{id}], Processed records: {counter:n0} ({time:0.000}s per 5,000,000)");
+                    elapsedSeconds = GlobalTimer.StopWatch.Elapsed.TotalSeconds;
                 }
 
                 var newVal = minArray.ReadNextLine();
@@ -100,19 +98,20 @@ namespace TextSorter.ExternalSort
                 {
                     subarrays.Remove(minArray);
                     minArray.Dispose();
-                    Logger.Log($"Id: [{id}], Subarray {minArray.ReaderId} emptied.");
+                    Logger.Log($"Sort job Id: [{id}], Subarray {minArray.ReaderId} emptied.");
                     continue;
                 }
 
-                //counter++;
+                counter++;
             }
 
+            outputWriter.Close();
             var avg = timings.Any() ? timings.Average() : 0;
-            Logger.Log($"Id: [{id}], Average time group id: {id} per 5,000,000: {avg:0.000}s");
-            Logger.Log($"Id: [{id}], Processed in {GlobalTimer.StopWatch.Elapsed.TotalSeconds - tempTimer}s");
+            Logger.Log($"Sort job Id: [{id}], Average time per 5,000,000: {avg:0.000}s");
+            Logger.Log($"Sort job Id: [{id}], Processed in {GlobalTimer.StopWatch.Elapsed.TotalSeconds - totalElapsedSeconds:0.000}s");
             var outputText = id == -1 ? "Output" : "Temp output";
-            Logger.Log($"Id: [{id}], {outputText} saved to: {outputFile} file.");
-            Logger.Log($"Id: [{id}], ---------------------");
+            Logger.Log($"Sort job Id: [{id}], {outputText} saved to: {outputFile} file.");
+            Logger.Log($"Sort job Id: [{id}], ---------------------");
 
             return outputFile;
         }
