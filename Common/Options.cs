@@ -13,7 +13,7 @@
         public const int Size100MB = 104857600; //1024*1024*100
 
         // OPTIONS TO TUNE
-        public const int BufferSize64MB = 33554432;
+        public const int BufferSize64MB = 67108864;
         public const int ChunkSize = 209715200;
         public const int ExternalSortOpenedFilesLimit = 8;
         public const int ExternalSortAsyncJobsLimit = 10;
