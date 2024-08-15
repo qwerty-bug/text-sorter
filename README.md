@@ -10,6 +10,8 @@ This solution contains two projects:<br/>
  - TextGenerator
  - TextSorter
 
+ Logs for both application are stored in `log` folder of each app home directory.
+
 ## How to use:
 **TextGenerator** - will produce file `SAMPLE_DATA.txt` in application folder with all sample data.
 </br>**TextSorter** - expect to find file `SAMPLE_DATA.txt` in application folder. The sorted output file will be saved in file `SORTED_DATA_<HH>_<MM>_<SS>.txt` in application folder with timestamp.
