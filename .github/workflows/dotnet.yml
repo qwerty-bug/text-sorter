@@ -29,3 +29,16 @@ jobs:
 
     - name: Test
       run: dotnet test --no-build -c Release --verbosity normal
+
+    - name: Publich TextGenerator
+      uses: actions/upload-artifact@v4
+      with:
+        name: TextGenerator
+        path: ${{ github.workspace }}/text-sorter/TextGenerator/bin/Release/net8.0/*
+
+
+    - name: Publich TextSorter
+      uses: actions/upload-artifact@v4
+      with:
+        name: TextSorter
+        path: ${{ github.workspace }}/text-sorter/TextSorter/bin/Release/net8.0/*
