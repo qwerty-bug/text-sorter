@@ -8,8 +8,12 @@ namespace Common
 
         public static void Log(string message)
         {
-            //Console.WriteLine($"{GlobalTimer.StopWatch.Elapsed.TotalSeconds:0.000}s, {message}");
             logger.Info($"[{GlobalTimer.StopWatch.Elapsed.TotalSeconds:0.000}s] {message}");
+        }
+
+        public static void LogError(string message)
+        {
+            logger.Error($"[{GlobalTimer.StopWatch.Elapsed.TotalSeconds:0.000}s] {message}");
         }
     }
 }
