@@ -16,7 +16,7 @@
         public const int BufferSize64MB = 67108864;
         public const int ChunkSize = 209715200;
         public const int ExternalSortOpenedFilesLimit = 8;
-        public const int ExternalSortAsyncJobsLimit = 10;
+        public const int ExternalSortAsyncJobsLimit = 5;
         /*
          * 536870912 => 512MB
          * 268435456 => 256MB
