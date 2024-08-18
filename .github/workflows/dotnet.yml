@@ -4,6 +4,7 @@
 name: Build Text Sorter tools
 
 on:
+  workflow_dispatch:
   push:
     branches: [ "main" ]
   pull_request:
