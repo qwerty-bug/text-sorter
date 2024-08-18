@@ -19,4 +19,9 @@ This solution contains two projects:<br/>
 </br> **TextSorter** - Run `StartSorter.bat` bat file. TextSorter is expecting to find file `SAMPLE_DATA.txt` in application folder. The sorted output file will be saved in file `SORTED_DATA_<HH>_<MM>_<SS>.txt` with timestamp in file name.
 
 ---
+User materials:
+- Merge Algorithms - 2-Way and K-Way Merge: https://www.youtube.com/watch?v=Xo54nlPHSpg
+- Sorting (really) large files with C#: https://josef.codes/sorting-really-large-files-with-c-sharp/
+
+---
  ##### Author: Piotr Zawisza
