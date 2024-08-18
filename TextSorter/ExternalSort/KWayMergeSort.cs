@@ -1,86 +1,148 @@
 ﻿using Common;
-using System.Text;
 
 namespace TextSorter.ExternalSort
 {
     public class KWayMergeSort
     {
-        private readonly IReadOnlyList<string> sortedFiles;
+        private const int LogThreshold = 5000000; // 5M
+        public const int InitialWorkId = 0;
 
-        public KWayMergeSort(IReadOnlyList<string> sortedFiles)
+        public List<SubArrayProperties> Initialize(IReadOnlyList<string> sortedFiles)
         {
-            this.sortedFiles = sortedFiles;
-        }
-
-        public async Task<List<LineDetails>> InitializeReaders()
-        {
-            var readers = new StreamReader[sortedFiles.Count];
-            var lines = new List<LineDetails>(sortedFiles.Count);
+            var subArrays = new List<SubArrayProperties>(sortedFiles.Count);
             for (int i = 0; i < sortedFiles.Count; i++)
             {
-                var sortedFileStream = File.OpenRead(sortedFiles[i]);
-                readers[i] = new StreamReader(sortedFileStream, Encoding.UTF8, bufferSize: DataConfig.BufferSize128KB);
-                lines.Add(new LineDetails
-                {
-                    Reader = readers[i],
-                    ReaderId = i,
-                    Value = await readers[i].ReadLineAsync()
-                });
+                subArrays.Add(new SubArrayProperties(sortedFiles[i], i));
             }
 
-            return lines;
+            return subArrays;
         }
 
-        public async Task Sort()
+        public string Process(int id, List<string> sortedFiles)
         {
-            var currentLines = await InitializeReaders();
-
-            var output = File.OpenWrite(DataConfig.SortedDataFile);
-            await using var outputWriter = new StreamWriter(output, bufferSize: DataConfig.BufferSize128KB);
-
-            while (true)
+            try
             {
-                if (currentLines.Count == 0)
+                var files = new List<string>(sortedFiles);
+                int i = id;
+                while (files.Count > Options.ExternalSortOpenedFilesLimit)
                 {
-                    Logger.Log($"Completed sorting");
-                    break;
-                }
+                    var toProcessGroups = new List<List<string>>();
+                    var groupsCount = files.Count / Options.ExternalSortOpenedFilesLimit +
+                                        (files.Count % Options.ExternalSortOpenedFilesLimit == 0 ? 0 : 1);
+                    for (int g = 0; g < groupsCount; g++)
+                    {
+                        toProcessGroups.Add(new List<string>(
+                            files
+                                .Skip(g * Options.ExternalSortOpenedFilesLimit)
+                                .Take(Options.ExternalSortOpenedFilesLimit).ToList()));
+                    }
 
-                currentLines
-                    .Sort((line1, line2) =>
+                    var jobs = new List<Task<string>>();
+                    foreach (var group in toProcessGroups)
+                    {
+                        i++;
+                        var jobId = i;
+                        jobs.Add(
+                            Task.Run(() => Process(jobId * 10, group)));
+
+                        if (jobs.Where(x => !x.IsCompleted).Count() >= Options.ExternalSortAsyncJobsLimit)
                         {
-                            var first = line1.Value.Split('.');
-                            var firstNumber = first[0];
-                            var firstText = first[1];
+                            Task.WaitAll(jobs.ToArray());
+                        }
+                    }
 
-                            var second = line2.Value.Split('.');
-                            var secondNumber = second[0];
-                            var secondText = second[1];
-
-                            var result = string.Compare(firstText, secondText, StringComparison.Ordinal);
-                            if (result != 0)
-                            {
-                                return result;
-                            }
-
-                            return int.Parse(firstNumber) > int.Parse(secondNumber) ? 1 : -1;
-                        });
-
-                var minLine = currentLines.First();
-                await outputWriter.WriteLineAsync(minLine.Value);
-
-                var newVal = await minLine.Reader.ReadLineAsync();
-                if(newVal is null)
-                {
-                    currentLines.Remove(minLine);
-                    minLine.Reader.Dispose();
-                    continue;
+                    Task.WaitAll(jobs.ToArray());
+                    foreach (var job in jobs)
+                    {
+                        files.Add(job.Result);
+                    }
+                    files.RemoveAll(x => toProcessGroups.SelectMany(x => x).Contains(x));
                 }
 
-                minLine.Value = newVal;
+                var subarrays = Initialize(files);
+
+                var outputFile = $"{id}_{Options.SortedOutputDataFile}";
+                if (id == InitialWorkId)
+                    outputFile = Options.SortedOutputDataFile;
+
+                double totalElapsedSeconds = GlobalTimer.StopWatch.Elapsed.TotalSeconds;
+
+                var avg = CreateSortedNode(id, i, subarrays, outputFile);
+
+                Logger.Log($"Sort job Id: [{id}], Average time per 5,000,000: {avg:0.000}s");
+                Logger.Log($"Sort job Id: [{id}], Processed in {GlobalTimer.StopWatch.Elapsed.TotalSeconds - totalElapsedSeconds:0.000}s");
+                var outputText = id == -1 ? "Output" : "Temp output";
+                Logger.Log($"Sort job Id: [{id}], {outputText} saved to: {outputFile} file.");
+                Logger.Log($"Sort job Id: [{id}], ---------------------");
+                return outputFile;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError($"Error in Sort job Id: [{id}], {ex}");
+                throw;
             }
 
-            Logger.Log($"Output saved to: {DataConfig.SortedDataFile} file.");
+        }
+
+        private static double CreateSortedNode(int id, int i, List<SubArrayProperties> subarrays, string outputFile)
+        {
+            var timings = new List<double>();
+            Logger.Log($"Opening file to write: {outputFile}");
+            using (var fileStream = File.OpenWrite(outputFile))
+            {
+                using (var outputWriter = new StreamWriter(fileStream, bufferSize: Options.BufferSize64MB))
+                {
+                    Logger.Log($"File {outputFile} opened.");
+                    FileCleaner.Add(outputFile);
+                    Logger.Log($"Sort job Id: [{id}], Start external sorting with {subarrays.Count} parts.");
+                    int counter = 1;
+                    double elapsedSeconds = GlobalTimer.StopWatch.Elapsed.TotalSeconds;
+                    while (true)
+                    {
+                        if (subarrays.Count == 0)
+                        {
+                            Logger.Log($"Sort job Id: [{id}], --");
+                            Logger.Log($"Sort job Id: [{i}], Sorting completed");
+                            break;
+                        }
+
+                        SortLines(subarrays);
+
+                        var minArray = subarrays.First();
+                        outputWriter.WriteLine(minArray.CurrentValue);
+                        if (counter % LogThreshold == 0)
+                        {
+                            var time = GlobalTimer.StopWatch.Elapsed.TotalSeconds - elapsedSeconds;
+                            timings.Add(time);
+                            Logger.Log($"Sort job Id: [{id}], Processed records: {counter:n0} ({time:0.000}s per 5,000,000)");
+                            elapsedSeconds = GlobalTimer.StopWatch.Elapsed.TotalSeconds;
+                        }
+
+                        var newVal = minArray.ReadNextLine();
+                        if (newVal is null)
+                        {
+                            subarrays.Remove(minArray);
+                            minArray.Dispose();
+                            Logger.Log($"Sort job Id: [{id}], Subarray {minArray.ReaderId} emptied.");
+                            continue;
+                        }
+
+                        counter++;
+                    }
+                }
+            }
+            return timings.Any() ? timings.Average() : 0;
+        }
+
+        public static List<SubArrayProperties> SortLines(List<SubArrayProperties> currentLines)
+        {
+            currentLines
+                .Sort((line1, line2) =>
+                {
+                    return Worker.Sort2Lines(line1.CurrentValue, line2.CurrentValue);
+                });
+
+            return currentLines;
         }
     }
 }

@@ -1,12 +1,12 @@
 ﻿using Common;
 using System.Text;
 
-namespace DataGenerator
+namespace TextGenerator
 {
     public static class TextTool
     {
-        const string Text = "Green Sweater is Jeans and Dress is Jacket Scarf Red Blue Yellow Black";
-
+        const string Text = "green sweater is jeans and dress is jacket scarf red blue yellow black";
+        private const int MaxNumber = 1000;
         static readonly HashSet<string> Words = new HashSet<string>();
 
         static readonly int WordsSize;
@@ -36,7 +36,7 @@ namespace DataGenerator
                 text.Append(textLine);
                 fileSize += Encoding.UTF8.GetByteCount(textLine.ToString());
 
-                if (fileSize >= DataConfig.Size100MB)
+                if (fileSize >= Options.Size100MB)
                     break;
 
                 text.AppendLine();
@@ -48,7 +48,7 @@ namespace DataGenerator
         public static StringBuilder GetLine()
         {
             var rdm = new Random();
-            StringBuilder strBld = new StringBuilder(rdm.Next(0, int.MaxValue).ToString())
+            StringBuilder strBld = new StringBuilder(rdm.Next(0, MaxNumber).ToString())
                 .Append('.');
             var wordsInLine = rdm.Next(5, 15);
             foreach (var i in Enumerable.Range(1, wordsInLine))

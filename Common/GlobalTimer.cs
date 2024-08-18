@@ -4,7 +4,7 @@ namespace Common
 {
     public static class GlobalTimer
     {
-        public static Stopwatch StopWatch { get; private set; }
+        public static Stopwatch StopWatch { get; private set; } 
 
         static GlobalTimer()
         {
