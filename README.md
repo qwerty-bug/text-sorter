@@ -37,7 +37,7 @@ For 70GB of text:
 ```
 
 ---
-Used materials:
+### Used materials:
 - Merge Algorithms - 2-Way and K-Way Merge: https://www.youtube.com/watch?v=Xo54nlPHSpg
 - Sorting (really) large files with C#: https://josef.codes/sorting-really-large-files-with-c-sharp/
 
