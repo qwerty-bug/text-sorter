@@ -18,8 +18,26 @@ This solution contains two projects:<br/>
 **TextGenerator** - Start `TextGenerator.exe`, it will produce file `SAMPLE_DATA.txt` in application folder with all sample data in size given by user input.
 </br> **TextSorter** - Run `StartSorter.bat` bat file. TextSorter is expecting to find file `SAMPLE_DATA.txt` in application folder. The sorted output file will be saved in file `SORTED_DATA_<HH>_<MM>_<SS>.txt` with timestamp in file name.
 
+## Samlpe run
+For 70GB of text:
+```
+2024-08-18 17:30:15,678 [1] INFO, [3403.823s] Data sorted successfully.
+2024-08-18 17:30:15,811 [1] INFO, [3403.955s] ============================================
+2024-08-18 17:30:15,811 [1] INFO, [3403.955s] 
+2024-08-18 17:30:15,811 [1] INFO, [3403.955s] ><><><><>><><><><><><>><><><><><><>><><><><><><><
+2024-08-18 17:30:15,811 [1] INFO, [3403.955s] 
+2024-08-18 17:30:15,811 [1] INFO, [3403.955s] STATS:
+2024-08-18 17:30:20,589 [1] INFO, [3403.955s]  Total processing time: 3403.95s [00:56:43.95]
+2024-08-18 17:30:37,313 [1] INFO, [3403.955s]  Average:               48.63s per 1GB
+2024-08-18 17:30:37,313 [1] INFO, [3403.955s]  Output file:           'SORTED_DATA_16_48_24.txt'
+2024-08-18 17:30:37,331 [1] INFO, [3403.955s]  Output file size:      70GB
+2024-08-18 17:30:37,331 [1] INFO, [3403.955s] 
+2024-08-18 17:30:37,331 [1] INFO, [3403.955s] ><><><><>><><><><><><>><><><><><><>><><><><><><><
+2024-08-18 17:30:37,331 [1] INFO, [3403.955s] 
+```
+
 ---
-User materials:
+Used materials:
 - Merge Algorithms - 2-Way and K-Way Merge: https://www.youtube.com/watch?v=Xo54nlPHSpg
 - Sorting (really) large files with C#: https://josef.codes/sorting-really-large-files-with-c-sharp/
 
